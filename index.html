@@ -208,6 +208,7 @@ svg{display:block;width:100%;overflow:visible}
 .closer p{font-family:'Libre Baskerville',serif;color:var(--mut);max-width:52ch;margin:0 auto 28px;line-height:1.7;font-size:14px}
 .closer .btn.gold{font-size:12px;padding:14px 26px}
 footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--mut2);font-size:10.5px;letter-spacing:.08em}
+.disclaimer{border-top:1px solid rgba(31,54,84,.55);padding:26px 0 58px;margin-top:24px;font-size:10.5px;letter-spacing:.08em}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
 footer a:hover{color:var(--gold)}
 .method{max-width:60ch;line-height:1.7;color:var(--mut2)}
@@ -227,36 +228,7 @@ footer a:hover{color:var(--gold)}
 </style></head>
 <body>
 
-<!-- ====== TOP BAR ====== -->
-<div class="topbar"><div class="navbar">
-  <div class="nleft">
-    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
-    <a class="brand" href="https://strategyai.co.uk/" target="_top">Strategy<i>AI</i></a>
-  </div>
-  <div class="nright">
-    <nav class="nav">
-      <a href="https://strategyai.co.uk/product" target="_top">Product</a>
-      <a href="https://strategyai.co.uk/why-strategyai" target="_top">Why StrategyAI</a>
-      <a href="https://strategyai.co.uk/deal-pulse" target="_top">Deal Pulse</a>
-      <a href="https://strategyai.co.uk/deal-insights" target="_top" class="active">Deal Insights</a>
-      <a href="https://strategyai.co.uk/pricing" target="_top">Pricing</a>
-      <a href="https://strategyai.co.uk/architecture" target="_top">Architecture</a>
-    </nav>
-    <div class="cta"><a class="btn gold" data-getaccess href="#">Get Access</a><a class="btn ghost" href="https://strategyai.co.uk/client-access" target="_top">Login</a></div>
-  </div>
-  <div class="menu" id="menu">
-    <a href="https://strategyai.co.uk/" target="_top">Home</a>
-    <a href="https://strategyai.co.uk/product" target="_top">Product</a>
-    <a href="https://strategyai.co.uk/why-strategyai" target="_top">Why StrategyAI</a>
-    <a href="https://strategyai.co.uk/how-it-works" target="_top">How It Works</a>
-    <a href="https://strategyai.co.uk/deal-pulse" target="_top">Deal Pulse</a>
-    <a href="https://strategyai.co.uk/deal-insights" target="_top" class="active">Deal Insights</a>
-    <a href="https://strategyai.co.uk/pricing" target="_top">Pricing</a>
-    <a href="https://strategyai.co.uk/architecture" target="_top">Architecture</a>
-    <a href="https://strategyai.co.uk/about" target="_top">About</a>
-    <a href="https://strategyai.co.uk/contact" target="_top">Contact</a>
-  </div>
-</div></div>
+<!-- No own nav bar: this page is embedded inside the StrategyAI (Base44) site, which supplies the global nav + footer. Kept chrome-less so there is exactly one nav and one footer. -->
 
 <!-- ====== HERO ====== -->
 <header class="hero"><div class="wrap reveal">
@@ -412,10 +384,8 @@ footer a:hover{color:var(--gold)}
 
 </div>
 
-<footer><div class="wrap">
-  <div class="method">StrategyAI Deal Pulse · 726 EMEA transactions, 12 Nov 2025 – 19 May 2026. Momentum compares the most recent three months against the prior three. Disclosed value covers 361 deals where consideration was public; undisclosed deals are tracked but excluded from value figures. Mandate patterns and trigger strength are model-derived and indicative, not advice.</div>
-  <div>© 2026 StrategyAI · <a href="#">Methodology</a> · <a href="#">Get access</a></div>
-</div></footer>
+<!-- Methodology kept as page content (a disclaimer). The site footer is supplied by the Base44 site, not here. -->
+<div class="disclaimer"><div class="wrap"><div class="method">StrategyAI Deal Pulse · 726 EMEA transactions, 12 Nov 2025 – 19 May 2026. Momentum compares the most recent three months against the prior three. Disclosed value covers 361 deals where consideration was public; undisclosed deals are tracked but excluded from value figures. Mandate patterns and trigger strength are model-derived and indicative, not advice.</div></div></div>
 
 <div class="tip" id="tip"></div>
 
