@@ -31,6 +31,10 @@ em{font-style:italic;color:var(--gold)}
 /* ---- top bar ---- */
 .topbar{position:sticky;top:0;z-index:40;background:rgba(10,16,26,.82);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line)}
+/* When embedded inside the Base44 site (iframe), Base44 supplies the nav + footer — hide our own chrome so there's no duplicate. */
+.embedded .topbar{display:none}
+.embedded footer{display:none}
+.embedded .hero{padding-top:46px}
 .topbar .navbar{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px;width:100%;padding:0 34px}
 .nleft{display:flex;align-items:center;gap:16px}
 .nright{display:flex;align-items:center;gap:34px}
@@ -409,7 +413,7 @@ footer a:hover{color:var(--gold)}
 </div>
 
 <footer><div class="wrap">
-  <div class="method">StrategyAI Deal Pulse · 726 EMEA transactions, 12 Nov 2025 – 19 May 2026. Momentum compares the most recent 60 days against the prior 60. Disclosed value covers 361 deals where consideration was public; undisclosed deals are tracked but excluded from value figures. Mandate patterns and trigger strength are model-derived and indicative, not advice.</div>
+  <div class="method">StrategyAI Deal Pulse · 726 EMEA transactions, 12 Nov 2025 – 19 May 2026. Momentum compares the most recent three months against the prior three. Disclosed value covers 361 deals where consideration was public; undisclosed deals are tracked but excluded from value figures. Mandate patterns and trigger strength are model-derived and indicative, not advice.</div>
   <div>© 2026 StrategyAI · <a href="#">Methodology</a> · <a href="#">Get access</a></div>
 </div></footer>
 
@@ -421,6 +425,8 @@ const GOLD="#c9a84c", COOL="#3b6ea8", MUT="#6f8398", GREEN="#22c55e";
 const months=["Nov","Dec","Jan","Feb","Mar","Apr","May"];
 // Single source for the Get Access destination (live marketing-site pricing page).
 const GET_ACCESS_URL="https://strategyai.co.uk/pricing";
+// Detect embedding: when inside the Base44 site iframe, hide our own nav/footer (Base44 supplies them).
+if(window.self!==window.top){document.documentElement.classList.add('embedded');}
 
 const HEAT=[ // sector, 6-mo volume, last-3mo, prior-3mo, % change (last 3mo vs prior 3mo)
  {s:"Materials & Chemicals",t:41,r:28,p:12,pct:133},
@@ -751,6 +757,10 @@ document.querySelectorAll('[data-getaccess]').forEach(a=>{a.setAttribute('href',
 (function(){const b=document.getElementById('burger'),m=document.getElementById('menu');if(!b||!m)return;
  b.addEventListener('click',e=>{e.stopPropagation();m.classList.toggle('open');});
  document.addEventListener('click',e=>{if(!m.contains(e.target)&&e.target!==b)m.classList.remove('open');});})();
+// Auto-height: report document height to the Base44 parent so the embedding iframe can size to fit (no nested scrollbars).
+(function(){function ph(){try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'strategyaiDealInsightsHeight',height:Math.ceil(document.documentElement.scrollHeight)},'*');}}catch(e){}}
+ window.addEventListener('load',()=>{ph();setTimeout(ph,400);setTimeout(ph,1200);});
+ window.addEventListener('resize',ph);setInterval(ph,2000);})();
 addEventListener('mousemove',e=>{if(tip.style.opacity==1)moveTip(e);});
 </script>
 </body></html>
