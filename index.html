@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>StrategyAI · Deal Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0f; --navy:#0d1b2a; --navy2:#0f2033; --card:#11253a; --card2:#152a40;
+  --line:#1f3654; --gold:#c9a84c; --gold-soft:rgba(201,168,76,.5);
+  --text:#e9e2d0; --mut:#9fb0c0; --mut2:#6f8398; --body:#d7cdb6;
+  --green:#22c55e; --crimson:#8b1a1a; --hot:#e8743b; --cool:#3b6ea8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--navy);color:var(--text);font-family:'DM Mono',ui-monospace,monospace;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(1200px 700px at 78% -8%,rgba(201,168,76,.10),transparent 60%),
+             radial-gradient(900px 600px at 8% 12%,rgba(59,110,168,.10),transparent 55%);}
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 40px}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:'Playfair Display',serif;font-weight:600;margin:0;color:#fff;line-height:1.06;letter-spacing:.2px}
+em{font-style:italic;color:var(--gold)}
+.kick{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold)}
+.mono{font-family:'DM Mono',monospace}
+.serif{font-family:'Playfair Display',serif}
+.baskt{font-family:'Libre Baskerville',Georgia,serif}
+
+/* ---- top bar ---- */
+.topbar{position:sticky;top:0;z-index:40;background:rgba(10,16,26,.82);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#fff;letter-spacing:.3px}
+.brand i{font-style:italic;color:var(--gold)}
+.nav{display:flex;gap:30px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.nav a.active,.nav a:hover{color:var(--gold)}
+.cta{display:flex;gap:12px;align-items:center}
+.btn{font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:9px 16px;border-radius:6px}
+.btn.gold{background:var(--gold);color:#11151c;font-weight:500}
+.btn.ghost{border:1px solid var(--green);color:var(--green)}
+
+/* ---- hero ---- */
+.hero{padding:78px 0 30px;position:relative}
+.hero .live{display:inline-flex;gap:9px;align-items:center;font-size:10px;letter-spacing:.26em;color:var(--mut);text-transform:uppercase;margin-bottom:22px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.hero h1{font-size:62px;font-weight:600;max-width:18ch}
+.hero h1 .thin{font-weight:500;color:var(--text)}
+.hero .lede{font-family:'Libre Baskerville',serif;font-size:16px;line-height:1.7;color:var(--body);max-width:60ch;margin:22px 0 0}
+.hero .asof{margin-top:20px;font-size:11px;letter-spacing:.12em;color:var(--mut2);text-transform:uppercase}
+.hero .asof b{color:var(--gold);font-weight:500}
+
+/* ---- ticker ---- */
+.ticker{margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;white-space:nowrap;background:rgba(10,16,26,.4)}
+.ticker .run{display:inline-block;padding:11px 0;animation:scroll 46s linear infinite;font-size:12px;letter-spacing:.04em}
+.ticker:hover .run{animation-play-state:paused}
+.ticker .it{color:var(--mut);margin:0 26px}
+.ticker .it b{color:#fff;font-weight:500}
+.ticker .up{color:var(--gold)}
+.ticker .dn{color:#c9826b}
+.ticker .sep{color:var(--line)}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---- kpi strip ---- */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin:46px 0 8px;
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(180deg,var(--card),var(--navy2))}
+.kpi{padding:24px 22px;border-right:1px solid var(--line);position:relative}
+.kpi:last-child{border-right:none}
+.kpi .k{font-size:9px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase}
+.kpi .v{font-family:'Playfair Display',serif;font-size:38px;color:#fff;margin:8px 0 2px;line-height:1}
+.kpi .v small{font-size:18px;color:var(--gold);font-style:italic}
+.kpi .s{font-size:10px;color:var(--mut2);letter-spacing:.04em}
+
+/* ---- section frame ---- */
+section{padding:64px 0;border-top:1px solid rgba(31,54,84,.55);position:relative}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:30px;gap:30px}
+.shead h2{font-size:34px;font-weight:600}
+.shead h2 .num{font-size:13px;color:var(--gold);font-family:'DM Mono';font-style:normal;vertical-align:super;margin-right:10px;letter-spacing:.1em}
+.shead .desc{font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--mut);max-width:48ch;line-height:1.65;text-align:right}
+.card{background:linear-gradient(180deg,rgba(17,37,58,.9),rgba(13,27,42,.92));border:1px solid var(--line);
+  border-radius:14px;padding:26px 28px;box-shadow:0 18px 50px rgba(0,0,0,.32)}
+
+/* ---- sector heat board ---- */
+.heatboard{display:grid;gap:11px}
+.heatrow{display:grid;grid-template-columns:170px 1fr 128px;align-items:center;gap:18px;
+  padding:13px 16px;border:1px solid var(--line);border-radius:11px;background:rgba(15,32,51,.55);
+  transition:transform .25s,border-color .25s,background .25s}
+.heatrow:hover{transform:translateX(4px);border-color:var(--gold-soft);background:rgba(20,40,62,.7)}
+.heatrow .name{font-size:13px;color:#fff;letter-spacing:.02em}
+.heatrow .name .vol{display:block;font-size:9.5px;color:var(--mut2);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.bar{height:22px;border-radius:5px;position:relative;background:rgba(255,255,255,.04);overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;display:block;width:0;transition:width 1.1s cubic-bezier(.16,1,.3,1)}
+.bar .lab{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.85);letter-spacing:.06em}
+.delta{text-align:right;font-size:15px;letter-spacing:.02em;display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.delta .arw{font-size:12px}
+.delta.hot{color:var(--gold)}
+.delta.warm{color:#cbb069}
+.delta.cool{color:var(--mut)}
+.delta.down{color:#c9826b}
+.heatscale{display:flex;justify-content:flex-end;gap:18px;margin-top:18px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut2)}
+.heatscale span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:18px;height:8px;border-radius:3px;display:inline-block}
+
+/* ---- charts generic ---- */
+.chartcard{position:relative}
+svg{display:block;width:100%;overflow:visible}
+.axislab{fill:var(--mut2);font-size:10px;font-family:'DM Mono';letter-spacing:.08em}
+.gridline{stroke:rgba(31,54,84,.5);stroke-width:1}
+.barv{transition:opacity .2s}
+.barv:hover{opacity:.82}
+.annot{fill:var(--gold);font-size:10.5px;font-family:'DM Mono';letter-spacing:.06em}
+.annot.serif{font-family:'Playfair Display';font-style:italic;font-size:13px}
+
+/* ---- two-col grids ---- */
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:24px}
+.grid2b{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.subh{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 18px}
+
+/* ---- momentum tape (sparklines) ---- */
+.tape{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.spark{border:1px solid var(--line);border-radius:11px;padding:15px 16px 13px;background:rgba(15,32,51,.5);transition:border-color .25s}
+.spark:hover{border-color:var(--gold-soft)}
+.spark .sn{font-size:11px;color:#fff;letter-spacing:.02em;display:flex;justify-content:space-between;align-items:baseline}
+.spark .sn em{font-style:normal;font-size:11px}
+.spark .sv{font-size:9px;color:var(--mut2);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+
+/* ---- mandate map ---- */
+.bubblewrap{position:relative}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;font-size:10px;letter-spacing:.06em;color:var(--mut)}
+.legend span{display:inline-flex;gap:7px;align-items:center}
+.lgd{width:10px;height:10px;border-radius:50%}
+
+/* ---- league / lists ---- */
+.lglist{display:grid;gap:2px}
+.lgrow{display:grid;grid-template-columns:26px 1fr auto auto;gap:14px;align-items:center;padding:11px 6px;border-bottom:1px solid rgba(31,54,84,.5);font-size:12.5px}
+.lgrow:last-child{border-bottom:none}
+.lgrow .rk{color:var(--gold);font-size:11px}
+.lgrow .nm{color:#fff}
+.lgrow .tag{font-size:9px;color:var(--mut2);letter-spacing:.04em}
+.lgrow .ct{color:var(--text)}
+.lgrow .vl{color:var(--gold);font-size:11px;text-align:right;min-width:64px}
+.pill{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut)}
+
+/* ---- donut row ---- */
+.donutrow{display:flex;gap:30px;align-items:center}
+.dlegend{display:grid;gap:9px;flex:1}
+.dleg{display:flex;align-items:center;gap:11px;font-size:12px}
+.dleg .sw2{width:11px;height:11px;border-radius:3px}
+.dleg .nm{color:var(--text);flex:1}
+.dleg .n{color:#fff}
+.dleg .pc{color:var(--mut2);font-size:10px;min-width:38px;text-align:right}
+
+/* ---- value histogram ---- */
+.vhist{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:end;height:200px}
+.vcol{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:9px}
+.vcol .vbar{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--gold),#8b6914);min-height:4px;transition:height 1s cubic-bezier(.16,1,.3,1)}
+.vcol .vn{font-size:14px;color:#fff;font-family:'Playfair Display'}
+.vcol .vb{font-size:9.5px;color:var(--mut2);letter-spacing:.08em;text-align:center;text-transform:uppercase}
+
+/* ---- hot mandates feed ---- */
+.feed{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.deal{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:linear-gradient(180deg,rgba(17,37,58,.85),rgba(13,27,42,.9));
+  position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+.deal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.deal:hover{transform:translateY(-3px);border-color:var(--gold-soft)}
+.deal .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:11px}
+.deal .route{font-family:'Playfair Display';font-size:18px;color:#fff;line-height:1.2}
+.deal .route .ar{color:var(--gold);font-style:italic;margin:0 7px}
+.deal .meta{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 13px}
+.deal .m{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--mut)}
+.deal .m.val{color:var(--gold);border-color:var(--gold-soft)}
+.deal .m.trig{color:#11151c;background:var(--gold);border-color:var(--gold)}
+.deal .angle{font-family:'Libre Baskerville',serif;font-size:12.5px;line-height:1.65;color:var(--body)}
+.deal .angle b{color:var(--gold);font-weight:400;font-style:italic}
+.deal .win{margin-top:13px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);display:flex;align-items:center;gap:8px}
+.deal .win .gdot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.deal .route.blur{filter:blur(8px);user-select:none;-webkit-user-select:none;pointer-events:none;opacity:.85}
+.deal.locked .lock{position:absolute;top:18px;right:20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:6px}
+.deal.locked .lock svg{width:12px;height:12px}
+.feedcta{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  margin-top:6px;padding:22px 26px;border:1px solid var(--gold-soft);border-radius:13px;
+  background:linear-gradient(180deg,rgba(201,168,76,.08),rgba(201,168,76,.02))}
+.feedcta .ft{font-family:'Libre Baskerville',serif;font-size:13.5px;color:var(--body);line-height:1.6}
+.feedcta .ft b{color:#fff;font-weight:400}
+.feedcta a{flex:0 0 auto;font-size:12px;letter-spacing:.16em;text-transform:uppercase;padding:13px 26px;border-radius:7px;background:var(--gold);color:#11151c;font-weight:500;transition:transform .2s,box-shadow .2s}
+.feedcta a:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(201,168,76,.28)}
+
+/* ---- closing ---- */
+.closer{text-align:center;padding:84px 0 40px}
+.closer h2{font-size:40px;max-width:22ch;margin:0 auto 18px}
+.closer p{font-family:'Libre Baskerville',serif;color:var(--mut);max-width:52ch;margin:0 auto 28px;line-height:1.7;font-size:14px}
+.closer .btn.gold{font-size:12px;padding:14px 26px}
+footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--mut2);font-size:10.5px;letter-spacing:.08em}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a:hover{color:var(--gold)}
+.method{max-width:60ch;line-height:1.7;color:var(--mut2)}
+
+.insight{margin-top:22px;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:11px;
+  padding:19px 24px;background:linear-gradient(180deg,rgba(201,168,76,.06),rgba(201,168,76,.02))}
+.insight .ik{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:9px}
+.insight .ik::before{content:"◆";font-size:8px}
+.insight p{font-family:'Libre Baskerville',serif;font-size:13.5px;line-height:1.78;color:var(--body);margin:0;max-width:92ch}
+.insight p b{color:#fff;font-weight:400}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+.tip{position:fixed;z-index:60;pointer-events:none;background:rgba(10,16,26,.95);border:1px solid var(--gold-soft);
+  border-radius:8px;padding:8px 11px;font-size:11px;color:var(--text);opacity:0;transition:opacity .12s;max-width:240px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.tip b{color:var(--gold)}
+@media(max-width:1100px){.wrap{padding:0 22px}.kpis{grid-template-columns:repeat(3,1fr)}.kpi:nth-child(3){border-right:none}.feed,.grid2,.grid2b{grid-template-columns:1fr}.tape{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body>
+
+<!-- ====== TOP BAR ====== -->
+<div class="topbar"><div class="wrap">
+  <div class="brand">Strategy<i>AI</i></div>
+  <nav class="nav">
+    <a href="#">Product</a><a href="#">Why StrategyAI</a>
+    <a href="#" class="active">Deal Pulse</a><a href="#">Pricing</a><a href="#">Architecture</a>
+  </nav>
+  <div class="cta"><a class="btn gold" data-getaccess href="#">Get Access</a><a class="btn ghost" href="#">Login</a></div>
+</div></div>
+
+<!-- ====== HERO ====== -->
+<header class="hero"><div class="wrap reveal">
+  <div class="live"><span class="dot"></span> Deal Pulse · EMEA M&amp;A Intelligence</div>
+  <h1>The mandate forms <span class="thin">before the</span> <em>deal closes.</em></h1>
+  <p class="lede">Every acquisition, merger and capital raise across EMEA carries a hidden advisory window — the weeks when synergy programmes, integration mandates and operating-model work are decided. Deal Pulse reads six months of that flow so a partner can see where the next mandate is forming, not where the last one landed.</p>
+  <div class="asof">Intelligence window <b>12 Nov 2025 — 19 May 2026</b> &nbsp;·&nbsp; <b>726</b> deals tracked &nbsp;·&nbsp; refreshed continuously</div>
+</div></header>
+
+<!-- ====== TICKER ====== -->
+<div class="ticker"><div class="run" id="ticker"></div></div>
+
+<div class="wrap">
+
+  <!-- ====== KPI STRIP ====== -->
+  <div class="kpis reveal" id="kpis">
+    <div class="kpi"><div class="k">Deals Tracked</div><div class="v" data-count="726">0</div><div class="s">6-month EMEA window</div></div>
+    <div class="kpi"><div class="k">Value Mapped</div><div class="v"><small>$</small><span data-count="528">0</span><small>bn</small></div><div class="s">361 disclosed · $1.46bn avg</div></div>
+    <div class="kpi"><div class="k">Sectors Live</div><div class="v" data-count="12">0</div><div class="s">across 30 countries</div></div>
+    <div class="kpi"><div class="k">High-Conviction</div><div class="v" data-count="120">0</div><div class="s">HIGH confidence band</div></div>
+    <div class="kpi"><div class="k">Mandate Patterns</div><div class="v" data-count="9">0</div><div class="s">matched of 11 tracked</div></div>
+    <div class="kpi"><div class="k">Hottest Sector</div><div class="v" style="font-size:28px;font-style:italic">Materials</div><div class="s" style="color:var(--gold)">▲ +133% · last 3mo vs prior</div></div>
+  </div>
+
+  <!-- ====== 01 SECTOR HEAT ====== -->
+  <section id="heat"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">01</span>Sector heat</h2>
+      <p class="desc">Deal velocity by sector across the six-month window — the most recent three months against the prior three. This is the rotation a partner pays Bloomberg for: which sectors are accelerating into mandate territory, and which are cooling.</p>
+    </div>
+    <div class="card chartcard">
+      <div class="heatboard" id="heatboard"></div>
+      <div class="heatscale">
+        <span><i class="sw" style="background:var(--gold)"></i> Accelerating</span>
+        <span><i class="sw" style="background:#c2a455"></i> Rising</span>
+        <span><i class="sw" style="background:var(--mut2)"></i> Flat</span>
+        <span><i class="sw" style="background:#9c6f61"></i> Cooling</span>
+        <span>Bar = 6-month volume · figure = last 3 months vs prior 3 months</span>
+      </div>
+    </div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>Momentum is rotating, not rising across the board. Materials &amp; Chemicals (<b>+133%</b>) and the financial sector (<b>+67%</b>) have sharply lifted their deal cadence into the most recent quarter, while <b>Consumer &amp; Retail has cooled by a third</b>. The read for a partner is positioning: the integration and synergy mandates that follow a deal wave land two-to-five months later, so the sectors accelerating now are where pipeline should be built for the back half of the year — and Consumer teams should be defending incumbent relationships rather than chasing a slowing market.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== 02 DEAL FLOW ====== -->
+  <section id="flow"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">02</span>Deal flow &amp; capital</h2>
+      <p class="desc">Monthly deal count against disclosed transaction value. Volume has climbed from 69 deals in November to 157 in May, with a $176bn capital peak in April — the busiest mandate-forming window of the half-year.</p>
+    </div>
+    <div class="card chartcard"><svg id="flowchart" viewBox="0 0 1180 380" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>Volume and capital move together, but they are not the same signal. Deal count more than doubled from November's trough to <b>157 in May</b>, while the <b>$176bn April capital peak</b> came from a handful of mega-deals rather than broad-based activity. Partners should read them separately: rising count means more mid-market integration work — the bread-and-butter of advisory — while the capital spikes flag the rare transformational deals where a single mandate can anchor a year's revenue.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== 03 MOMENTUM TAPE ====== -->
+  <section id="tape"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">03</span>Sector momentum tape</h2>
+      <p class="desc">Six-month trajectory for every tracked sector at a glance. FIG and Healthcare are breaking out; TMT remains the deepest market by volume.</p>
+    </div>
+    <div class="tape" id="tapegrid"></div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>The tape separates structural depth from directional heat. <b>TMT and FIG are the deepest markets</b> by raw volume and the safest places to keep a standing sector team. But the steepest recent slopes — Materials, Business Services, Healthcare — are where the marginal mandate is being created right now. Depth tells a partner where to be permanently; slope tells them where to lean in this quarter.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== 04 MANDATE MAP ====== -->
+  <section id="mandate"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">04</span>Where the mandates are</h2>
+      <p class="desc">Each deal is matched to one of eleven mandate patterns and scored for trigger strength. Volume tells you where the work is; trigger strength tells you where it converts. PE Day-One deals are rare but score highest.</p>
+    </div>
+    <div class="grid2">
+      <div class="card chartcard">
+        <div class="subh">Pattern × conviction</div>
+        <svg id="bubble" viewBox="0 0 620 360" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="legend">
+          <span><i class="lgd" style="background:var(--gold)"></i> Bubble size = deal count</span>
+          <span><i class="lgd" style="background:var(--cool)"></i> Y = avg trigger strength /10</span>
+        </div>
+      </div>
+      <div class="card chartcard">
+        <div class="subh">Trigger-strength distribution</div>
+        <svg id="trighist" viewBox="0 0 460 360" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="legend"><span>247 deals score 7+/10 — the high-conviction core of the half-year.</span></div>
+      </div>
+    </div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>Volume and conviction point in different directions, and the gap is the opportunity. Post-acquisition integration is <b>84% of all flow but scores a middling 6.1/10</b> — reliable, competitive, commoditised work. PE Day-One and cross-border entry deals are rare (27 combined) yet score <b>8.3–8.9</b>, because the advisory need is acute and the field is thin. The play is a barbell: industrialise the PMI volume to stay in the flow, and hunt selectively for the high-conviction patterns you can win at premium rates.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== 05 GEOGRAPHY ====== -->
+  <section id="geo"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">05</span>Geography of the flow</h2>
+      <p class="desc">EMEA accounts for 676 of 726 deals. The United Kingdom is the single deepest market, followed by Germany and France — the corridor where most cross-border integration mandates originate.</p>
+    </div>
+    <div class="grid2">
+      <div class="card chartcard"><div class="subh">Top markets · deals</div><svg id="geobars" viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet"></svg></div>
+      <div class="card chartcard">
+        <div class="subh">By region</div>
+        <div class="donutrow">
+          <svg id="regiondonut" viewBox="0 0 200 200" width="200" height="200" style="flex:0 0 200px"></svg>
+          <div class="dlegend" id="regionlegend"></div>
+        </div>
+        <div class="subh" style="margin-top:30px">Buyer composition</div>
+        <div class="dlegend" id="buyerlegend"></div>
+      </div>
+    </div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>The flow is overwhelmingly a UK-and-DACH story. The <b>United Kingdom alone is 28% of tracked deals</b>, and together with Germany and France forms the corridor where most cross-border integration mandates originate. That concentrates the bet for a partner: one well-placed London or Frankfurt relationship touches the largest share of pipeline, while the long tail of 30 countries rewards specialists who own a geography others overlook.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== 06 BUYERS + VALUE ====== -->
+  <section id="buyers"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">06</span>Who is moving &amp; how big</h2>
+      <p class="desc">The most acquisitive buyers of the half-year, and the size profile of disclosed deals. Blackstone, Apollo and KKR lead repeat activity; 113 deals cleared $1bn.</p>
+    </div>
+    <div class="grid2b">
+      <div class="card"><div class="subh">Most acquisitive buyers</div><div class="lglist" id="league"></div></div>
+      <div class="card chartcard"><div class="subh">Disclosed deal-size distribution</div><div class="vhist" id="vhist"></div></div>
+    </div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>Repeat acquirers are the highest-yield relationships in the data. <b>Blackstone, Apollo and KKR</b> each closed multiple deals across several sectors in six months — every one spinning off integration, carve-out or value-creation work. On size, the market is a barbell: <b>190 disclosed deals under $500m</b> for repeatable volume advisory, and <b>113 above $1bn</b> for marquee mandates. Coverage should map to both ends — the sponsors for steady flow, the mega-deals for profile.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== 07 HOT MANDATES ====== -->
+  <section id="hot"><div class="reveal">
+    <div class="shead">
+      <h2><span class="num">07</span>Live mandate board</h2>
+      <p class="desc">The highest-conviction deals in the window, each with the partner angle and the advisory window still open. This is the layer a terminal will never give you: not the transaction, but the mandate behind it.</p>
+    </div>
+    <div class="feed" id="feed"></div>
+    <div class="insight"><div class="ik">The StrategyAI read</div>
+      <p>This is the layer a terminal will never surface: not that a deal happened, but that a <b>mandate is forming because of it</b>. Every card is a live, named opportunity with the advisory window still open — typically 6–14 weeks from announcement before the integration programme is staffed. The partner who calls in week two, with a credible point of view on synergy delivery, is the one who wins the work. At this stage, speed and specificity beat brand.</p>
+    </div>
+  </div></section>
+
+  <!-- ====== CLOSER ====== -->
+  <div class="closer reveal">
+    <div class="kick" style="margin-bottom:18px">The signal layer beneath the market</div>
+    <h2>See the mandate <em>before</em> the market does.</h2>
+    <p>Deal Pulse is one lens of the StrategyAI intelligence platform — monitoring 1,340+ companies and 135 PE funds across EMEA, scoring every signal against eleven mandate patterns, and delivering the ones that matter to your inbox each morning.</p>
+    <a class="btn gold" data-getaccess href="#">Request access</a>
+  </div>
+
+</div>
+
+<footer><div class="wrap">
+  <div class="method">StrategyAI Deal Pulse · 726 EMEA transactions, 12 Nov 2025 – 19 May 2026. Momentum compares the most recent 60 days against the prior 60. Disclosed value covers 361 deals where consideration was public; undisclosed deals are tracked but excluded from value figures. Mandate patterns and trigger strength are model-derived and indicative, not advice.</div>
+  <div>© 2026 StrategyAI · <a href="#">Methodology</a> · <a href="#">Get access</a></div>
+</div></footer>
+
+<div class="tip" id="tip"></div>
+
+<script>
+/* ============ EMBEDDED 6-MONTH AGGREGATES (ma_deals) ============ */
+const GOLD="#c9a84c", COOL="#3b6ea8", MUT="#6f8398", GREEN="#22c55e";
+const months=["Nov","Dec","Jan","Feb","Mar","Apr","May"];
+// Single source for the Get Access destination (live marketing-site onboarding page).
+const GET_ACCESS_URL="https://strategyai.co.uk/onboarding";
+
+const HEAT=[ // sector, 6-mo volume, last-3mo, prior-3mo, % change (last 3mo vs prior 3mo)
+ {s:"Materials & Chemicals",t:41,r:28,p:12,pct:133},
+ {s:"FIG",t:121,r:72,p:43,pct:67},
+ {s:"Business Services",t:80,r:50,p:30,pct:67},
+ {s:"Healthcare",t:74,r:41,p:28,pct:46},
+ {s:"Energy & Infrastructure",t:77,r:42,p:31,pct:35},
+ {s:"TMT",t:147,r:75,p:64,pct:17},
+ {s:"Real Estate & Lodging",t:33,r:16,p:14,pct:14},
+ {s:"Industrials",t:67,r:33,p:31,pct:6},
+ {s:"Aerospace & Defense",t:14,r:7,p:7,pct:0},
+ {s:"Consumer & Retail",t:68,r:26,p:39,pct:-33},
+];
+
+const FLOW=[ // month, deals, value $bn
+ {m:"Nov",d:69,v:41.0},{m:"Dec",d:106,v:70.5},{m:"Jan",d:104,v:45.0},
+ {m:"Feb",d:73,v:84.9},{m:"Mar",d:71,v:52.7},{m:"Apr",d:146,v:176.3},{m:"May",d:157,v:57.7},
+];
+
+const TAPE=[ // sector : 7 monthly counts Nov..May
+ {s:"TMT",d:[19,22,21,16,11,29,29]},
+ {s:"FIG",d:[13,14,14,11,9,27,33]},
+ {s:"Business Services",d:[0,10,13,10,14,18,15]},
+ {s:"Energy & Infra",d:[8,9,12,9,7,15,17]},
+ {s:"Healthcare",d:[7,12,9,8,7,13,18]},
+ {s:"Consumer & Retail",d:[6,16,17,3,7,12,7]},
+ {s:"Industrials",d:[9,14,6,6,6,12,14]},
+ {s:"Materials & Chem",d:[1,4,4,4,6,9,13]},
+ {s:"Real Estate",d:[5,4,5,3,3,7,6]},
+ {s:"Aero & Defense",d:[1,1,3,3,1,1,4]},
+];
+
+const PATTERNS=[ // name, count, avg trigger, label
+ {n:"Post-Acq PMI",c:607,trig:6.1},
+ {n:"PE Day-One",c:24,trig:8.9},
+ {n:"PE Bolt-On",c:16,trig:6.9},
+ {n:"Pre-Exit Prep",c:5,trig:7.0},
+ {n:"Cross-Border Entry",c:3,trig:8.3},
+ {n:"Platform Build",c:6,trig:6.2},
+ {n:"Sector Disruption",c:2,trig:7.5},
+ {n:"Carve-Out",c:2,trig:6.5},
+];
+
+const TRIG=[{s:2,n:2},{s:3,n:34},{s:4,n:1},{s:5,n:315},{s:6,n:71},{s:7,n:67},{s:8,n:66},{s:9,n:86},{s:10,n:28}];
+
+const GEO=[ // country, deals
+ {c:"United Kingdom",n:201},{c:"Germany",n:72},{c:"France",n:62},{c:"Netherlands",n:40},
+ {c:"United States",n:34},{c:"Spain",n:30},{c:"Switzerland",n:30},{c:"Italy",n:30},
+ {c:"Sweden",n:28},{c:"Ireland",n:26},{c:"Belgium",n:19},{c:"Denmark",n:14},
+];
+
+const REGION=[{c:"EMEA",n:676,col:GOLD},{c:"North America",n:37,col:COOL},{c:"APAC",n:12,col:"#7a8aa0"},{c:"GCC",n:1,col:"#4a5a6e"}];
+const BUYER=[{c:"Strategic",n:544,col:GOLD},{c:"Private Equity",n:87,col:COOL},{c:"Other",n:65,col:"#5d7186"},{c:"Sovereign",n:21,col:"#8b6914"},{c:"Family Office",n:9,col:"#3a4a5e"}];
+
+const LEAGUE=[
+ {n:"Blackstone",d:7,v:"$11.0bn",t:"PE · 6 sectors"},
+ {n:"Apollo Global",d:6,v:"$7.3bn",t:"PE · 6 sectors"},
+ {n:"Barclays",d:6,v:"$1.0bn",t:"FIG"},
+ {n:"KKR",d:3,v:"$8.7bn",t:"Energy · TMT"},
+ {n:"Stonepeak",d:3,v:"$3.2bn",t:"Energy & Infra"},
+ {n:"Accenture",d:3,v:"$1.1bn",t:"Services · TMT"},
+ {n:"Warburg Pincus",d:3,v:"$1.0bn",t:"Consumer · Health"},
+ {n:"One Equity",d:3,v:"$0.3bn",t:"3 sectors"},
+];
+
+const VBANDS=[
+ {b:"<$50m",n:47},{b:"$50–200m",n:76},{b:"$200–500m",n:67},
+ {b:"$500m–1bn",n:58},{b:"$1–5bn",n:85},{b:"$5bn+",n:28},
+];
+
+const DEALS=[
+ {b:"KONE",t:"TK Elevator",sec:"Industrials",geo:"Germany",val:"$29.4bn",trig:10,pat:"Post-Acq PMI",
+  angle:"A $29bn elevator merger runs a synergy programme through months 2–5. <b>Operating-model convergence and portfolio rationalisation</b> mandate forming now.",win:"Advisory window open · 6–14 weeks"},
+ {b:"Intel",t:"Fab 34 JV",sec:"TMT",geo:"Ireland",val:"$14.2bn",trig:10,pat:"Post-Acq PMI",
+  angle:"$14.2bn semiconductor JV in Ireland. <b>Integration and operating-model work</b> typically commissioned immediately post-close — warm path via Goldman Sachs / Morgan Stanley.",win:"Advisory window open · 6–14 weeks"},
+ {b:"BMG",t:"Concord",sec:"TMT",geo:"Germany",val:"€12.0bn",trig:10,pat:"Post-Acq PMI",
+  angle:"€12bn music-rights merger. <b>Catalogue integration and synergy realisation</b> mandate forming — advised by J.P. Morgan.",win:"Advisory window open · 6–14 weeks"},
+ {b:"Vodafone Group",t:"CK Hutchison",sec:"TMT",geo:"United Kingdom",val:"£4.3bn",trig:10,pat:"Post-Acq PMI",
+  angle:"UK telco consolidation. <b>Network and operating-model convergence</b> programme runs through months 2–5 — warm path via Morgan Stanley.",win:"Advisory window open · 6–14 weeks"},
+ {b:"Eli Lilly",t:"Centessa Pharmaceuticals",sec:"Healthcare",geo:"United Kingdom",val:"$7.8bn",trig:10,pat:"Post-Acq PMI",
+  angle:"$7.8bn pharma acquisition. <b>R&D portfolio integration</b> and pipeline rationalisation mandate forming — advised by Morgan Stanley / Jefferies.",win:"Advisory window open · 6–14 weeks"},
+ {b:"Athora Group",t:"Pension Insurance Corp",sec:"FIG",geo:"United Kingdom",val:"$7.6bn",trig:10,pat:"Post-Acq PMI",
+  angle:"$7.6bn UK insurance acquisition. <b>Balance-sheet and operating-model integration</b> — inside FIG's +67% quarter-on-quarter acceleration.",win:"Advisory window open · 6–14 weeks"},
+ {b:"Gilead",t:"Tubulis",sec:"Healthcare",geo:"Germany",val:"$5.0bn",trig:10,pat:"Post-Acq PMI",
+  angle:"$5bn German biotech deal. <b>Cross-border R&D integration</b> programme forming — advised by Centerview / J.P. Morgan.",win:"Advisory window open · 6–14 weeks"},
+ {b:"Poste Italiane",t:"Strategic equity raise",sec:"TMT",geo:"Italy",val:"€10.8bn",trig:10,pat:"Post-Acq PMI",
+  angle:"€10.8bn capital raise funding M&A. <b>Deployment and portfolio-strategy</b> mandate typically follows within the quarter.",win:"Advisory window open · 6–14 weeks"},
+];
+
+/* ============ helpers ============ */
+const NS="http://www.w3.org/2000/svg";
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const tip=document.getElementById('tip');
+function showTip(e,html){tip.innerHTML=html;tip.style.opacity=1;moveTip(e);}
+function moveTip(e){tip.style.left=Math.min(e.clientX+14,innerWidth-260)+'px';tip.style.top=(e.clientY+14)+'px';}
+function hideTip(){tip.style.opacity=0;}
+
+/* observers declared before use (avoid temporal-dead-zone) */
+const heatObs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.bar i').forEach(f=>f.style.width=f.dataset.w);heatObs.unobserve(e.target);}});},{threshold:.3});
+const vObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.vbar').forEach(b=>b.style.height=b.dataset.h);vObs.unobserve(e.target);}}),{threshold:.3});
+
+/* ---- ticker ---- */
+(function(){
+ const items=[
+  ['Materials','▲ +133%'],['FIG','▲ +67%'],['Business Services','▲ +67%'],['Healthcare','▲ +46%'],
+  ['Energy & Infra','▲ +35%'],['TMT','▲ +17%'],['Real Estate','▲ +14%'],['Consumer','▼ −33%'],
+ ];
+ let h='';
+ const block=items.map(([a,b])=>{const neg=b.indexOf('▼')>-1;return `<span class="it"><b>${a}</b> <span class="${neg?'dn':'up'}">${b}</span></span><span class="sep">|</span>`;}).join('');
+ h=`<span class="it" style="color:var(--gold)">SECTOR MOMENTUM · LAST 3MO vs PRIOR 3MO</span><span class="sep">|</span>`+block;
+ document.getElementById('ticker').innerHTML=h+h;
+})();
+
+/* ---- heat board ---- */
+(function(){
+ const wrap=document.getElementById('heatboard');
+ const maxV=Math.max(...HEAT.map(d=>d.t));
+ HEAT.forEach((d)=>{
+  let col,cls,arrow;
+  if(d.pct>=60){col=GOLD;cls='hot';arrow='▲';}
+  else if(d.pct>=20){col='#c2a455';cls='warm';arrow='▲';}
+  else if(d.pct>0){col=MUT;cls='cool';arrow='▲';}
+  else if(d.pct===0){col=MUT;cls='cool';arrow='■';}
+  else {col='#9c6f61';cls='down';arrow='▼';}
+  const sign=d.pct>0?'+':'';
+  const row=document.createElement('div');row.className='heatrow';
+  row.innerHTML=`<div class="name">${d.s}<span class="vol">${d.t} deals · 6mo · ${d.p}→${d.r} last qtr</span></div>
+   <div class="bar"><i style="background:linear-gradient(90deg,${col},${col}cc)"></i><span class="lab">${d.t}</span></div>
+   <div class="delta ${cls}"><span class="arw">${arrow}</span>${sign}${d.pct}%</div>`;
+  wrap.appendChild(row);
+  const fill=row.querySelector('.bar i');
+  fill.dataset.w=(d.t/maxV*100).toFixed(1)+'%';
+ });
+ heatObs.observe(wrap);
+})();
+
+/* ---- flow combo chart ---- */
+(function(){
+ const svg=document.getElementById('flowchart');
+ const W=1180,H=380,padL=54,padR=54,padT=30,padB=46;
+ const iw=W-padL-padR, ih=H-padT-padB;
+ const maxD=160, maxV=180;
+ // gridlines
+ for(let i=0;i<=4;i++){const y=padT+ih*i/4;svg.appendChild(el('line',{class:'gridline',x1:padL,y1:y,x2:W-padR,y2:y}));
+   const t=el('text',{class:'axislab',x:padL-10,y:y+4,'text-anchor':'end'});t.textContent=Math.round(maxD-maxD*i/4);svg.appendChild(t);
+   const t2=el('text',{class:'axislab',x:W-padR+10,y:y+4,'text-anchor':'start',fill:GOLD});t2.textContent='$'+Math.round(maxV-maxV*i/4);svg.appendChild(t2);}
+ const bw=iw/FLOW.length*0.42;
+ FLOW.forEach((d,i)=>{
+  const cx=padL+iw*(i+0.5)/FLOW.length;
+  const bh=d.d/maxD*ih, by=padT+ih-bh;
+  const r=el('rect',{class:'barv',x:cx-bw/2,y:padT+ih,width:bw,height:0,rx:5,fill:'url(#bg)'});
+  svg.appendChild(r);
+  setTimeout(()=>{r.setAttribute('y',by);r.setAttribute('height',bh);},80*i+200);
+  r.style.transition='y 1s cubic-bezier(.16,1,.3,1),height 1s cubic-bezier(.16,1,.3,1)';
+  r.addEventListener('mousemove',e=>showTip(e,`<b>${d.m}</b> · ${d.d} deals · $${d.v}bn`));r.addEventListener('mouseleave',hideTip);
+  const lab=el('text',{class:'axislab',x:cx,y:H-padB+22,'text-anchor':'middle'});lab.textContent=d.m;svg.appendChild(lab);
+ });
+ // value line
+ const pts=FLOW.map((d,i)=>[padL+iw*(i+0.5)/FLOW.length, padT+ih-d.v/maxV*ih]);
+ const path=el('path',{d:'M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L'),fill:'none',stroke:GOLD,'stroke-width':2.5,'stroke-linejoin':'round'});
+ svg.appendChild(path);
+ const len=path.getTotalLength();path.style.strokeDasharray=len;path.style.strokeDashoffset=len;path.style.transition='stroke-dashoffset 1.6s ease .4s';
+ setTimeout(()=>path.style.strokeDashoffset=0,300);
+ pts.forEach((p,i)=>{const c=el('circle',{cx:p[0],cy:p[1],r:4,fill:'#0d1b2a',stroke:GOLD,'stroke-width':2});svg.appendChild(c);
+   c.addEventListener('mousemove',e=>showTip(e,`<b>${FLOW[i].m}</b> · $${FLOW[i].v}bn disclosed`));c.addEventListener('mouseleave',hideTip);});
+ // April peak annotation
+ const peak=pts[5];
+ const a=el('text',{class:'annot serif',x:peak[0],y:peak[1]-16,'text-anchor':'middle'});a.textContent='$176bn peak';svg.appendChild(a);
+ // defs
+ const defs=el('defs');defs.innerHTML=`<linearGradient id="bg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b6ea8"/><stop offset="1" stop-color="#1c3b5c"/></linearGradient>`;svg.appendChild(defs);
+ // legend
+ const lg=el('text',{class:'axislab',x:padL,y:18});lg.textContent='■ deals / month';lg.setAttribute('fill',COOL);svg.appendChild(lg);
+ const lg2=el('text',{class:'axislab',x:padL+120,y:18,fill:GOLD});lg2.textContent='— disclosed value $bn';svg.appendChild(lg2);
+})();
+
+/* ---- momentum tape sparklines ---- */
+(function(){
+ const wrap=document.getElementById('tapegrid');
+ TAPE.forEach(d=>{
+  const max=Math.max(...d.d),min=Math.min(...d.d);
+  const W=200,H=46,pad=4;
+  const pts=d.d.map((v,i)=>[pad+(W-2*pad)*i/(d.d.length-1),(H-pad)-(v-min)/(max-min||1)*(H-2*pad)]);
+  const last=d.d[d.d.length-1],first=d.d[0];
+  const up=last>=first;
+  const col=up?GOLD:MUT;
+  const area='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L')+`L${pts[pts.length-1][0].toFixed(1)},${H} L${pts[0][0]},${H} Z`;
+  const line='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L');
+  const id='g'+Math.random().toString(36).slice(2,7);
+  const sum=d.d.reduce((a,b)=>a+b,0);
+  const box=document.createElement('div');box.className='spark';
+  box.innerHTML=`<div class="sn">${d.s} <em style="color:${col}">${last}</em></div>
+   <div class="sv">${sum} deals · ends ${last}/mo</div>
+   <svg viewBox="0 0 ${W} ${H}" style="margin-top:9px;height:46px">
+     <defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".34"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+     <path d="${area}" fill="url(#${id})"/>
+     <path d="${line}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+     <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="2.6" fill="${col}"/>
+   </svg>`;
+  wrap.appendChild(box);
+ });
+})();
+
+/* ---- mandate bubble ---- */
+(function(){
+ const svg=document.getElementById('bubble');
+ const W=620,H=360,padL=52,padR=30,padT=24,padB=48;
+ const iw=W-padL-padR,ih=H-padT-padB;
+ const maxC=Math.max(...PATTERNS.map(p=>p.c));
+ // y = trigger 2..10, x = log count
+ for(let i=2;i<=10;i+=2){const y=padT+ih-(i-2)/8*ih;svg.appendChild(el('line',{class:'gridline',x1:padL,y1:y,x2:W-padR,y2:y}));
+   const t=el('text',{class:'axislab',x:padL-9,y:y+4,'text-anchor':'end'});t.textContent=i;svg.appendChild(t);}
+ const yl=el('text',{class:'axislab',x:padL-9,y:padT-9,'text-anchor':'end',fill:GOLD});yl.textContent='trig';svg.appendChild(yl);
+ const xmax=Math.log10(620);
+ PATTERNS.forEach(p=>{
+  const x=padL+ (Math.log10(p.c)/xmax)*iw*0.92+8;
+  const y=padT+ih-(p.trig-2)/8*ih;
+  const r=6+Math.sqrt(p.c)/Math.sqrt(maxC)*40;
+  const hot=p.trig>=8;
+  const c=el('circle',{cx:x,cy:y,r:0,fill:hot?GOLD:COOL,'fill-opacity':hot?.85:.6,stroke:hot?'#fff':GOLD,'stroke-width':hot?1.4:.8,'stroke-opacity':.6});
+  svg.appendChild(c);setTimeout(()=>{c.style.transition='r .9s cubic-bezier(.16,1,.3,1)';c.setAttribute('r',r);},120);
+  c.addEventListener('mousemove',e=>showTip(e,`<b>${p.n}</b><br>${p.c} deals · avg trigger ${p.trig}/10`));c.addEventListener('mouseleave',hideTip);
+  const lab=el('text',{x:x,y:y- r-7,'text-anchor':'middle',class:'axislab',fill:'#fff','font-size':p.c>20?'11':'9'});lab.textContent=p.n;
+  if(p.c>15||p.trig>=8) svg.appendChild(lab);
+ });
+ const xl=el('text',{class:'axislab',x:W-padR,y:H-padB+30,'text-anchor':'end'});xl.textContent='deal volume (log) →';svg.appendChild(xl);
+})();
+
+/* ---- trigger histogram ---- */
+(function(){
+ const svg=document.getElementById('trighist');
+ const W=460,H=360,padL=40,padR=18,padT=20,padB=44;
+ const iw=W-padL-padR,ih=H-padT-padB;
+ const max=Math.max(...TRIG.map(d=>d.n));
+ const bw=iw/TRIG.length*0.7;
+ TRIG.forEach((d,i)=>{
+  const cx=padL+iw*(i+0.5)/TRIG.length;
+  const bh=d.n/max*ih,by=padT+ih-bh;
+  const hot=d.s>=7;
+  const r=el('rect',{class:'barv',x:cx-bw/2,y:padT+ih,width:bw,height:0,rx:4,fill:hot?GOLD:'#2c4a6b'});
+  svg.appendChild(r);setTimeout(()=>{r.style.transition='y .9s cubic-bezier(.16,1,.3,1),height .9s cubic-bezier(.16,1,.3,1)';r.setAttribute('y',by);r.setAttribute('height',bh);},60*i+150);
+  r.addEventListener('mousemove',e=>showTip(e,`Trigger <b>${d.s}/10</b> · ${d.n} deals`));r.addEventListener('mouseleave',hideTip);
+  const lab=el('text',{class:'axislab',x:cx,y:H-padB+20,'text-anchor':'middle'});lab.textContent=d.s;svg.appendChild(lab);
+ });
+ const xl=el('text',{class:'axislab',x:padL,y:padT-6,fill:GOLD});xl.textContent='deals';svg.appendChild(xl);
+ const xl2=el('text',{class:'axislab',x:W-padR,y:H-padB+38,'text-anchor':'end'});xl2.textContent='trigger strength /10';svg.appendChild(xl2);
+})();
+
+/* ---- geo bars ---- */
+(function(){
+ const svg=document.getElementById('geobars');
+ const W=640,rowH=28,padL=140,padR=50,padT=6;
+ const max=Math.max(...GEO.map(d=>d.n));
+ svg.setAttribute('viewBox',`0 0 ${W} ${GEO.length*rowH+10}`);
+ GEO.forEach((d,i)=>{
+  const y=padT+i*rowH;
+  const t=el('text',{class:'axislab',x:padL-12,y:y+rowH/2+4,'text-anchor':'end',fill:'#fff','font-size':'11.5'});t.textContent=d.c;svg.appendChild(t);
+  const full=W-padL-padR;
+  svg.appendChild(el('rect',{x:padL,y:y+5,width:full,height:rowH-12,rx:4,fill:'rgba(255,255,255,.04)'}));
+  const w=d.n/max*full;
+  const r=el('rect',{x:padL,y:y+5,width:0,height:rowH-12,rx:4,fill:i===0?GOLD:'url(#gg)'});svg.appendChild(r);
+  setTimeout(()=>{r.style.transition='width 1s cubic-bezier(.16,1,.3,1)';r.setAttribute('width',w);},50*i+150);
+  const n=el('text',{class:'axislab',x:padL+w+9,y:y+rowH/2+4,fill:i===0?GOLD:'#cbd5e1','font-size':'11'});n.textContent=d.n;svg.appendChild(n);
+ });
+ const defs=el('defs');defs.innerHTML=`<linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#3b6ea8"/><stop offset="1" stop-color="#26486b"/></linearGradient>`;svg.appendChild(defs);
+})();
+
+/* ---- region donut + legends ---- */
+function donut(svgId,legId,data,total){
+ const svg=document.getElementById(svgId);
+ const cx=100,cy=100,r=72,rin=46;let a0=-Math.PI/2;
+ data.forEach(d=>{
+  const frac=d.n/total,a1=a0+frac*2*Math.PI;
+  const x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
+  const xi0=cx+rin*Math.cos(a1),yi0=cy+rin*Math.sin(a1),xi1=cx+rin*Math.cos(a0),yi1=cy+rin*Math.sin(a0);
+  const large=frac>.5?1:0;
+  const p=el('path',{d:`M${x0},${y0} A${r},${r} 0 ${large} 1 ${x1},${y1} L${xi0},${yi0} A${rin},${rin} 0 ${large} 0 ${xi1},${yi1} Z`,fill:d.col,'fill-opacity':.92});
+  svg.appendChild(p);
+  p.addEventListener('mousemove',e=>showTip(e,`<b>${d.c}</b> · ${d.n} (${Math.round(frac*100)}%)`));p.addEventListener('mouseleave',hideTip);
+  a0=a1;
+ });
+ const c=el('text',{x:cx,y:cy-4,'text-anchor':'middle',fill:'#fff','font-family':'Playfair Display','font-size':'26'});c.textContent=total;svg.appendChild(c);
+ const c2=el('text',{x:cx,y:cy+15,'text-anchor':'middle',class:'axislab','font-size':'9'});c2.textContent='DEALS';svg.appendChild(c2);
+ if(legId){const leg=document.getElementById(legId);
+  data.forEach(d=>{const row=document.createElement('div');row.className='dleg';
+   row.innerHTML=`<span class="sw2" style="background:${d.col}"></span><span class="nm">${d.c}</span><span class="n">${d.n}</span><span class="pc">${Math.round(d.n/total*100)}%</span>`;leg.appendChild(row);});}
+}
+donut('regiondonut','regionlegend',REGION,726);
+(function(){const leg=document.getElementById('buyerlegend');const tot=726;
+ BUYER.forEach(d=>{const row=document.createElement('div');row.className='dleg';
+  row.innerHTML=`<span class="sw2" style="background:${d.col}"></span><span class="nm">${d.c}</span><span class="n">${d.n}</span><span class="pc">${Math.round(d.n/tot*100)}%</span>`;leg.appendChild(row);});})();
+
+/* ---- league table ---- */
+(function(){const wrap=document.getElementById('league');
+ LEAGUE.forEach((d,i)=>{const row=document.createElement('div');row.className='lgrow';
+  row.innerHTML=`<span class="rk">${String(i+1).padStart(2,'0')}</span><span class="nm">${d.n} <span class="tag">${d.t}</span></span><span class="ct">${d.d} deals</span><span class="vl">${d.v}</span>`;wrap.appendChild(row);});})();
+
+/* ---- value histogram ---- */
+(function(){const wrap=document.getElementById('vhist');const max=Math.max(...VBANDS.map(d=>d.n));
+ VBANDS.forEach((d,i)=>{const col=document.createElement('div');col.className='vcol';
+  col.innerHTML=`<div class="vn">${d.n}</div><div class="vbar" style="height:0"></div><div class="vb">${d.b}</div>`;wrap.appendChild(col);
+  const bar=col.querySelector('.vbar');bar.dataset.h=(d.n/max*150)+'px';});
+ vObs.observe(wrap);})();
+
+/* ---- hot mandates feed ---- */
+(function(){const wrap=document.getElementById('feed');
+ const lockSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`;
+ DEALS.forEach((d,i)=>{const locked=i>=3;
+  const c=document.createElement('div');c.className='deal'+(locked?' locked':'');
+  c.innerHTML=`<div class="top"><div class="route${locked?' blur':''}">${d.b}<span class="ar">→</span>${d.t}</div>${locked?`<span class="lock">${lockSvg} Locked</span>`:''}</div>
+   <div class="meta"><span class="m">${d.sec}</span><span class="m">${d.geo}</span><span class="m val">${d.val}</span><span class="m">${d.pat}</span><span class="m trig">Trigger ${d.trig}/10</span></div>
+   <div class="angle">${d.angle}</div>
+   <div class="win"><span class="gdot"></span>${d.win}</div>`;wrap.appendChild(c);});
+ const cta=document.createElement('div');cta.className='feedcta';
+ cta.innerHTML=`<div class="ft"><b>Five more high-conviction mandates are live behind access</b> — with named counterparties, advisory windows and warm-path routes.</div><a href="${GET_ACCESS_URL}" target="_top">Get Access</a>`;
+ wrap.appendChild(cta);})();
+
+/* ---- count-up ---- */
+function countUp(el,target){const dur=1300,t0=performance.now();
+ function step(t){const p=Math.min((t-t0)/dur,1);const e=1-Math.pow(1-p,3);
+  el.textContent=Math.round(target*e).toLocaleString();if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+const kpiObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('[data-count]').forEach(n=>countUp(n,+n.dataset.count));kpiObs.unobserve(e.target);}}),{threshold:.4});
+kpiObs.observe(document.getElementById('kpis'));
+
+/* ---- reveals ---- */
+const rObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rObs.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(x=>rObs.observe(x));
+document.querySelectorAll('[data-getaccess]').forEach(a=>{a.setAttribute('href',GET_ACCESS_URL);a.setAttribute('target','_top');});
+addEventListener('mousemove',e=>{if(tip.style.opacity==1)moveTip(e);});
+</script>
+</body></html>
