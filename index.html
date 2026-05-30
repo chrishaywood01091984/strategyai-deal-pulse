@@ -31,7 +31,17 @@ em{font-style:italic;color:var(--gold)}
 /* ---- top bar ---- */
 .topbar{position:sticky;top:0;z-index:40;background:rgba(10,16,26,.82);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line)}
-.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.topbar .navbar{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px;width:100%;padding:0 34px}
+.nleft{display:flex;align-items:center;gap:16px}
+.nright{display:flex;align-items:center;gap:34px}
+.burger{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:40px;height:34px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:transparent;cursor:pointer}
+.burger span{display:block;height:1.5px;width:100%;background:var(--gold);border-radius:2px;transition:.2s}
+.burger:hover{border-color:var(--gold-soft)}
+.menu{position:absolute;top:62px;left:34px;min-width:232px;background:rgba(10,16,26,.97);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:9px;display:none;flex-direction:column;box-shadow:0 22px 55px rgba(0,0,0,.55);z-index:60}
+.menu.open{display:flex}
+.menu a{padding:10px 12px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);border-radius:7px}
+.menu a:hover{background:rgba(201,168,76,.08);color:var(--gold)}
+.menu a.active{color:var(--gold)}
 .brand{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#fff;letter-spacing:.3px}
 .brand i{font-style:italic;color:var(--gold)}
 .nav{display:flex;gap:30px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
@@ -214,13 +224,34 @@ footer a:hover{color:var(--gold)}
 <body>
 
 <!-- ====== TOP BAR ====== -->
-<div class="topbar"><div class="wrap">
-  <a class="brand" href="https://strategyai.co.uk/" target="_top">Strategy<i>AI</i></a>
-  <nav class="nav">
-    <a href="https://strategyai.co.uk/product" target="_top">Product</a><a href="https://strategyai.co.uk/deal-pulse" target="_top">Deal Pulse</a>
-    <a href="https://strategyai.co.uk/deal-insights" target="_top" class="active">Deal Insights</a><a href="https://strategyai.co.uk/pricing" target="_top">Pricing</a><a href="https://strategyai.co.uk/architecture" target="_top">Architecture</a>
-  </nav>
-  <div class="cta"><a class="btn gold" data-getaccess href="#">Get Access</a><a class="btn ghost" href="https://strategyai.co.uk/client-access" target="_top">Login</a></div>
+<div class="topbar"><div class="navbar">
+  <div class="nleft">
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a class="brand" href="https://strategyai.co.uk/" target="_top">Strategy<i>AI</i></a>
+  </div>
+  <div class="nright">
+    <nav class="nav">
+      <a href="https://strategyai.co.uk/product" target="_top">Product</a>
+      <a href="https://strategyai.co.uk/why-strategyai" target="_top">Why StrategyAI</a>
+      <a href="https://strategyai.co.uk/deal-pulse" target="_top">Deal Pulse</a>
+      <a href="https://strategyai.co.uk/deal-insights" target="_top" class="active">Deal Insights</a>
+      <a href="https://strategyai.co.uk/pricing" target="_top">Pricing</a>
+      <a href="https://strategyai.co.uk/architecture" target="_top">Architecture</a>
+    </nav>
+    <div class="cta"><a class="btn gold" data-getaccess href="#">Get Access</a><a class="btn ghost" href="https://strategyai.co.uk/client-access" target="_top">Login</a></div>
+  </div>
+  <div class="menu" id="menu">
+    <a href="https://strategyai.co.uk/" target="_top">Home</a>
+    <a href="https://strategyai.co.uk/product" target="_top">Product</a>
+    <a href="https://strategyai.co.uk/why-strategyai" target="_top">Why StrategyAI</a>
+    <a href="https://strategyai.co.uk/how-it-works" target="_top">How It Works</a>
+    <a href="https://strategyai.co.uk/deal-pulse" target="_top">Deal Pulse</a>
+    <a href="https://strategyai.co.uk/deal-insights" target="_top" class="active">Deal Insights</a>
+    <a href="https://strategyai.co.uk/pricing" target="_top">Pricing</a>
+    <a href="https://strategyai.co.uk/architecture" target="_top">Architecture</a>
+    <a href="https://strategyai.co.uk/about" target="_top">About</a>
+    <a href="https://strategyai.co.uk/contact" target="_top">Contact</a>
+  </div>
 </div></div>
 
 <!-- ====== HERO ====== -->
@@ -717,6 +748,9 @@ kpiObs.observe(document.getElementById('kpis'));
 const rObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rObs.unobserve(e.target);}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(x=>rObs.observe(x));
 document.querySelectorAll('[data-getaccess]').forEach(a=>{a.setAttribute('href',GET_ACCESS_URL);a.setAttribute('target','_top');});
+(function(){const b=document.getElementById('burger'),m=document.getElementById('menu');if(!b||!m)return;
+ b.addEventListener('click',e=>{e.stopPropagation();m.classList.toggle('open');});
+ document.addEventListener('click',e=>{if(!m.contains(e.target)&&e.target!==b)m.classList.remove('open');});})();
 addEventListener('mousemove',e=>{if(tip.style.opacity==1)moveTip(e);});
 </script>
 </body></html>
