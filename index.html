@@ -587,27 +587,35 @@ const vObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.ta
  const avgPct=TAPE.reduce((s,t)=>s+t.pct,0)/TAPE.length; // cross-sector average momentum
  const lineCol=p=> p<0?TBLUE:(p>avgPct?TRED:TGREEN);
  const leg=document.createElement('div');leg.className='tapelegend';
- leg.innerHTML=`<span><i style="background:${TRED}"></i> Heating — above-average acceleration</span><span><i style="background:${TGREEN}"></i> Steady — around the cross-sector average</span><span><i style="background:${TBLUE}"></i> Cooling — slowing vs prior quarter</span>`;
+ leg.innerHTML=`<span>Each line is coloured along its length:</span><span><i style="background:${TRED}"></i> Peaking — above the sector's own range</span><span><i style="background:${TGREEN}"></i> Baseline — normal run-rate</span><span><i style="background:${TBLUE}"></i> Dip / cooling — below range</span>`;
  wrap.appendChild(leg);
+ const cmap={r:TRED,g:TGREEN,b:TBLUE};
  TAPE.forEach(d=>{
-  const max=Math.max(...d.d),min=Math.min(...d.d);
+  const arr=d.d,max=Math.max(...arr),min=Math.min(...arr);
   const W=460,H=80,pad=6;
-  const pts=d.d.map((v,i)=>[pad+(W-2*pad)*i/(d.d.length-1),(H-pad)-(v-min)/(max-min||1)*(H-2*pad)]);
-  const last=d.d[d.d.length-1];
-  const col=lineCol(d.pct);
+  const pts=arr.map((v,i)=>[pad+(W-2*pad)*i/(arr.length-1),(H-pad)-(v-min)/(max-min||1)*(H-2*pad)]);
+  const last=arr[arr.length-1];
+  const badgeCol=lineCol(d.pct);
   const sign=d.pct>=0?'+':'';const arrow=d.pct>=0?'▲':'▼';
-  const area='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L')+`L${pts[pts.length-1][0].toFixed(1)},${H} L${pts[0][0]},${H} Z`;
-  const line='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L');
+  // classify each month vs the sector's OWN range: red=peaking, blue=dip/cooling, green=baseline
+  const mn=arr.reduce((a,b)=>a+b,0)/arr.length, rng=(max-min)||1;
+  const cls=arr.map(v=> v>mn+0.4*rng?'r':(v<mn-0.4*rng?'b':'g'));
+  const segCol=i=>{const a=cls[i],b=cls[i+1];return cmap[(a==='r'||b==='r')?'r':((a==='b'||b==='b')?'b':'g')];};
   const id='g'+Math.random().toString(36).slice(2,7);
-  const sum=d.d.reduce((a,b)=>a+b,0);
+  const sum=arr.reduce((a,b)=>a+b,0);
+  // multi-coloured line: one segment per month so each line shows where it peaks
+  let segs='';
+  for(let i=0;i<pts.length-1;i++){segs+=`<path d="M${pts[i][0].toFixed(1)},${pts[i][1].toFixed(1)} L${pts[i+1][0].toFixed(1)},${pts[i+1][1].toFixed(1)}" fill="none" stroke="${segCol(i)}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;}
+  const area='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L')+`L${pts[pts.length-1][0].toFixed(1)},${H} L${pts[0][0]},${H} Z`;
+  const endCol=cmap[cls[cls.length-1]];
   const box=document.createElement('div');box.className='spark';
-  box.innerHTML=`<div class="sn">${d.s} <em class="pctv" style="color:${col}">${arrow} ${sign}${d.pct}%</em></div>
+  box.innerHTML=`<div class="sn">${d.s} <em class="pctv" style="color:${badgeCol}">${arrow} ${sign}${d.pct}%</em></div>
    <div class="sv">${sum} deals · ${last}/mo latest · last 3mo vs prior quarter</div>
    <svg viewBox="0 0 ${W} ${H}" style="margin-top:12px;height:80px;width:100%">
-     <defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".30"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+     <defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${badgeCol}" stop-opacity=".16"/><stop offset="1" stop-color="${badgeCol}" stop-opacity="0"/></linearGradient></defs>
      <path d="${area}" fill="url(#${id})"/>
-     <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-     <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="3.4" fill="${col}"/>
+     ${segs}
+     <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="3.4" fill="${endCol}"/>
    </svg>`;
   wrap.appendChild(box);
  });
