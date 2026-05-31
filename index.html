@@ -239,6 +239,22 @@ footer a:hover{color:var(--gold)}
   <h1>The mandate forms <span class="thin">before the</span> <em>deal closes.</em></h1>
   <p class="lede">Every acquisition, merger and capital raise across EMEA carries a hidden advisory window — the weeks when synergy programmes, integration mandates and operating-model work are decided. Deal Pulse reads six months of that flow so a partner can see where the next mandate is forming, not where the last one landed.</p>
   <div class="asof">Intelligence window <b>12 Nov 2025 — 29 May 2026</b> &nbsp;·&nbsp; <b>773</b> deals tracked &nbsp;·&nbsp; refreshed continuously</div>
+  <div class="herocta">
+    <button type="button" class="btn gold dpbtn" id="dpToggle" aria-expanded="false" aria-controls="dpFormWrap">Get the 6-month report — free</button>
+    <div class="herocta-sub">Branded PDF snapshot + the refreshed edition every month · unsubscribe any time</div>
+  </div>
+  <div class="dpform-wrap" id="dpFormWrap" hidden>
+    <form id="dpForm" class="dpform" novalidate>
+      <div class="dpform-row">
+        <label class="dpf"><span>Full name</span><input type="text" name="name" autocomplete="name" maxlength="120" required></label>
+        <label class="dpf"><span>Work email</span><input type="email" name="email" autocomplete="email" required></label>
+      </div>
+      <input type="text" name="website" class="dp-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="dp-consent"><input type="checkbox" name="consent" required><span>I agree to receive the Deal Pulse report and monthly newsletter from StrategyAI, and accept the <a id="dpPrivacy" href="https://strategyai.co.uk/privacy" target="_top" rel="noopener">privacy policy</a>. Unsubscribe any time.</span></label>
+      <button type="submit" class="btn gold dp-submit" id="dpSubmit">Send me the report →</button>
+      <div class="dp-msg" id="dpMsg" role="status" aria-live="polite"></div>
+    </form>
+  </div>
 </div></header>
 
 <!-- ====== TICKER ====== -->
@@ -754,5 +770,74 @@ document.querySelectorAll('[data-getaccess]').forEach(a=>{a.setAttribute('href',
  window.addEventListener('load',()=>{ph();setTimeout(ph,400);setTimeout(ph,1200);});
  window.addEventListener('resize',ph);setInterval(ph,2000);})();
 addEventListener('mousemove',e=>{if(tip.style.opacity==1)moveTip(e);});
+</script>
+<style>
+.herocta{margin-top:28px;display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+.dpbtn{font-size:13px;padding:14px 28px;cursor:pointer;border:none}
+.herocta-sub{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#8995a6;text-transform:uppercase}
+.dpform-wrap{margin-top:18px;max-width:600px;width:100%}
+.dpform{background:#13243a;border:1px solid #24364f;border-top:3px solid var(--gold);border-radius:12px;padding:22px 24px;animation:dpin .35s ease}
+@keyframes dpin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dpform-row{display:flex;gap:14px;flex-wrap:wrap}
+.dpf{flex:1;min-width:200px;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.dpf span{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.dpf input{background:#0d1b2a;border:1px solid #2e4763;border-radius:7px;padding:11px 13px;color:#fff;font-family:inherit;font-size:14px}
+.dpf input:focus{outline:none;border-color:var(--gold)}
+.dp-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.dp-consent{display:flex;gap:10px;align-items:flex-start;font-family:'Inter',system-ui,sans-serif;font-size:12.5px;color:#cdd6df;line-height:1.5;margin:2px 0 16px}
+.dp-consent input{margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex:none}
+.dp-consent a{color:var(--gold)}
+.dp-submit{width:100%;padding:14px;font-size:13px;cursor:pointer;border:none}
+.dp-submit[disabled]{opacity:.6;cursor:default}
+.dp-msg{margin-top:14px;font-family:'Inter',system-ui,sans-serif;font-size:13.5px;line-height:1.55;display:none}
+.dp-msg.show{display:block}
+.dp-msg.ok{color:#52c08a}.dp-msg.err{color:#e0675f}
+</style>
+<script>
+(function(){
+ const SUBSCRIBE_URL="https://gvdfeqzhizlzpybdibca.supabase.co/functions/v1/dp-subscribe";
+ const toggle=document.getElementById('dpToggle'), wrap=document.getElementById('dpFormWrap'),
+       form=document.getElementById('dpForm'), msg=document.getElementById('dpMsg'), submit=document.getElementById('dpSubmit');
+ if(!toggle) return;
+ const resize=()=>window.dispatchEvent(new Event('resize'));
+ toggle.addEventListener('click',()=>{const willOpen=wrap.hidden; wrap.hidden=!willOpen; toggle.setAttribute('aria-expanded',String(willOpen)); if(willOpen){const i=form.querySelector('input[name=name]'); if(i)setTimeout(()=>i.focus(),50);} resize();});
+ function show(type,text){msg.className='dp-msg show '+type; msg.textContent=text; resize();}
+ form.addEventListener('submit',async(e)=>{
+   e.preventDefault();
+   const fd=new FormData(form);
+   const payload={name:(fd.get('name')||'').toString().trim(),email:(fd.get('email')||'').toString().trim(),consent:form.querySelector('input[name=consent]').checked,website:(fd.get('website')||'').toString(),source:'deal_pulse_page'};
+   if(!payload.name){show('err','Please enter your name.');return;}
+   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)){show('err','Please enter a valid work email.');return;}
+   if(!payload.consent){show('err','Please tick the consent box to continue.');return;}
+   submit.disabled=true; submit.textContent='Sending…'; msg.className='dp-msg';
+   try{
+     const r=await fetch(SUBSCRIBE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+     const d=await r.json().catch(()=>({}));
+     if(r.ok&&d.success){ form.querySelectorAll('input,button').forEach(el=>el.style.display='none'); show('ok', '✓ '+(d.message||'Almost there — check your inbox to confirm and receive your report.')); }
+     else { show('err', d.error||'Something went wrong. Please try again.'); submit.disabled=false; submit.textContent='Send me the report →'; }
+   }catch(err){ show('err','Network error — please try again in a moment.'); submit.disabled=false; submit.textContent='Send me the report →'; }
+ });
+})();
+</script>
+<style>
+.printmode .ticker,.printmode .herocta,.printmode .dpform-wrap,.printmode .tip{display:none!important}
+.printmode .reveal{opacity:1!important;transform:none!important}
+.printmode .card,.printmode .insight,.printmode .spark,.printmode .kpi,.printmode .deal,.printmode .shead{break-inside:avoid}
+@media print{.ticker,.herocta,.dpform-wrap{display:none!important}.reveal{opacity:1!important;transform:none!important}}
+</style>
+<script>
+/* ---- print/PDF mode: snap all scroll-triggered animations to final state ---- */
+(function(){
+ if(!/[?&]print/i.test(location.search)) return;
+ document.documentElement.classList.add('printmode');
+ function force(){
+  document.querySelectorAll('.reveal').forEach(x=>x.classList.add('in'));
+  document.querySelectorAll('[data-count]').forEach(n=>{n.textContent=(+n.dataset.count).toLocaleString();});
+  document.querySelectorAll('.bar i').forEach(f=>{if(f.dataset.w)f.style.width=f.dataset.w;});
+  document.querySelectorAll('.vbar').forEach(b=>{if(b.dataset.h)b.style.height=b.dataset.h;});
+ }
+ force(); setTimeout(force,300); setTimeout(force,1000);
+ setTimeout(()=>{window.__dpReady=true;document.body.setAttribute('data-dp-ready','1');},2400);
+})();
 </script>
 </body></html>
