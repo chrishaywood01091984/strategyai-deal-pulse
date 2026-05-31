@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="UTF-8">
+<title>StrategyAI · Deal Pulse — launch carousel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=DM+Mono:wght@400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b2a;--navy2:#13243a;--gold:#c9a84c;--cream:#e8e6df;--mut:#8995a6;--line:#24364f;--red:#e0675f;--green:#4fb583;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#06101c}
+.slide{width:1080px;height:1350px;background:var(--navy);color:var(--cream);position:relative;overflow:hidden;
+  page-break-after:always;display:flex;flex-direction:column;justify-content:center;padding:96px 92px;
+  background-image:radial-gradient(1200px 600px at 80% -10%, rgba(201,168,76,.10), transparent 60%);}
+.slide::after{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,var(--gold),transparent)}
+.brand{position:absolute;top:60px;left:92px;display:flex;align-items:center;gap:14px}
+.brand .nm{font-family:'Playfair Display',serif;font-size:30px;color:#fff;font-weight:600}
+.kick{font-family:'DM Mono',monospace;font-size:20px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.pg{position:absolute;bottom:58px;right:92px;font-family:'DM Mono',monospace;font-size:18px;letter-spacing:.1em;color:var(--mut)}
+.swipe{position:absolute;bottom:58px;left:92px;font-family:'DM Mono',monospace;font-size:18px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Playfair Display',serif;font-weight:600;line-height:1.05;letter-spacing:-.01em}
+.em{font-style:italic;color:var(--gold)}
+.lede{font-family:'Libre Baskerville',serif;line-height:1.6;color:#cdd6df}
+.label{font-family:'DM Mono',monospace;font-size:22px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:30px}
+/* cover */
+.cover h1{font-size:104px}
+.cover .sub{font-family:'Libre Baskerville',serif;font-size:34px;color:#cdd6df;margin-top:40px;line-height:1.5}
+/* problem */
+.big{font-family:'Playfair Display',serif;font-size:72px;line-height:1.12;font-weight:500}
+.big b{color:var(--gold);font-weight:600}
+.strike{color:var(--mut)}
+.rule{width:140px;height:4px;background:var(--gold);margin:46px 0}
+.note{font-family:'Libre Baskerville',serif;font-size:30px;color:#aeb9c6;line-height:1.55}
+/* list */
+.li{font-family:'Libre Baskerville',serif;font-size:38px;line-height:1.4;color:var(--cream);padding:30px 0;border-top:1px solid var(--line);display:flex;gap:26px;align-items:flex-start}
+.li:last-child{border-bottom:1px solid var(--line)}
+.li .n{font-family:'DM Mono',monospace;font-size:26px;color:var(--gold);margin-top:8px}
+.li small{display:block;font-family:'Libre Baskerville',serif;font-size:24px;color:var(--mut);margin-top:8px;font-style:italic}
+/* stats */
+.stat{font-family:'Playfair Display',serif;font-size:150px;color:#fff;line-height:1;font-weight:600}
+.stat .u{color:var(--gold);font-size:80px}
+.statlab{font-family:'DM Mono',monospace;font-size:24px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-top:14px}
+.statrow{display:flex;gap:70px;flex-wrap:wrap;margin-top:30px}
+.statrow .s .v{font-family:'Playfair Display',serif;font-size:84px;color:#fff;font-weight:600;line-height:1}
+.statrow .s .l{font-family:'DM Mono',monospace;font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-top:10px}
+/* heat bars */
+.bar{display:flex;align-items:center;gap:22px;margin:24px 0}
+.bar .nm{width:300px;font-family:'DM Mono',monospace;font-size:24px;color:var(--cream);letter-spacing:.04em}
+.bar .track{flex:1;height:34px;background:#0f2236;border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px}
+.bar .pc{width:130px;text-align:right;font-family:'Playfair Display',serif;font-size:34px;font-weight:600}
+/* cta */
+.cta h1{font-size:78px}
+.ctaline{font-family:'Libre Baskerville',serif;font-size:32px;color:#cdd6df;line-height:1.55;margin-top:30px}
+.url{font-family:'DM Mono',monospace;font-size:34px;color:var(--gold);margin-top:44px;letter-spacing:.02em}
+.pill{display:inline-block;margin-top:40px;background:var(--gold);color:var(--navy);font-family:'DM Mono',monospace;font-size:30px;font-weight:500;padding:24px 40px;border-radius:12px;letter-spacing:.02em;line-height:1.4}
+.logosvg{width:46px;height:46px}
+</style></head>
+<body>
+
+<!-- 1 COVER -->
+<section class="slide cover">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="kick">Deal Pulse · EMEA M&amp;A Intelligence</div>
+  <h1 style="margin-top:34px">The mandate forms<br><span class="em">before the deal closes.</span></h1>
+  <div class="sub">Live deal intelligence for strategy partners — the advisory mandate, spotted before the market sees it.</div>
+  <div class="swipe">Swipe →</div>
+  <div class="pg">01</div>
+</section>
+
+<!-- 2 THE PROBLEM -->
+<section class="slide">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="label">The gap</div>
+  <div class="big"><span class="strike">Bloomberg and Preqin tell you a deal <b>closed.</b></span></div>
+  <div class="rule"></div>
+  <div class="big">We tell you a <b>mandate is forming</b> — weeks before.</div>
+  <div class="note" style="margin-top:48px">The advisory window opens at announcement. Most firms only hear about it once the work is already staffed.</div>
+  <div class="swipe">Swipe →</div><div class="pg">02</div>
+</section>
+
+<!-- 3 WHAT IT DOES -->
+<section class="slide">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="label">What Deal Pulse reads</div>
+  <div class="li"><span class="n">01</span><div>Sector momentum — where capital is rotating<small>Which sectors are accelerating into mandate territory, last quarter vs prior.</small></div></div>
+  <div class="li"><span class="n">02</span><div>The mandate behind every deal<small>Each transaction scored against eleven mandate patterns and a trigger strength.</small></div></div>
+  <div class="li"><span class="n">03</span><div>The live board — with the window still open<small>Named opportunities, the partner angle, and the weeks left to win the work.</small></div></div>
+  <div class="swipe">Swipe →</div><div class="pg">03</div>
+</section>
+
+<!-- 4 SCALE -->
+<section class="slide">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="label">Six months, read in full</div>
+  <div class="stat"><span class="u">$</span>531<span class="u">bn</span></div>
+  <div class="statlab">disclosed deal value mapped across EMEA</div>
+  <div class="statrow">
+    <div class="s"><div class="v">773</div><div class="l">deals tracked</div></div>
+    <div class="s"><div class="v">30+</div><div class="l">countries</div></div>
+    <div class="s"><div class="v">11</div><div class="l">mandate patterns</div></div>
+  </div>
+  <div class="note" style="margin-top:50px">Refreshed continuously. Every deal, classified and scored.</div>
+  <div class="swipe">Swipe →</div><div class="pg">04</div>
+</section>
+
+<!-- 5 SECTOR HEAT TEASER -->
+<section class="slide">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="label">Where the capital is rotating · last 3mo vs prior</div>
+  <div class="bar"><span class="nm">Materials &amp; Chemicals</span><div class="track"><div class="fill" style="width:100%;background:var(--red)"></div></div><span class="pc" style="color:var(--red)">+142%</span></div>
+  <div class="bar"><span class="nm">Real Estate</span><div class="track"><div class="fill" style="width:76%;background:var(--red)"></div></div><span class="pc" style="color:var(--red)">+108%</span></div>
+  <div class="bar"><span class="nm">FIG</span><div class="track"><div class="fill" style="width:65%;background:var(--red)"></div></div><span class="pc" style="color:var(--red)">+92%</span></div>
+  <div class="bar"><span class="nm">Business Services</span><div class="track"><div class="fill" style="width:37%;background:var(--green)"></div></div><span class="pc" style="color:var(--green)">+52%</span></div>
+  <div class="bar"><span class="nm">Industrials</span><div class="track"><div class="fill" style="width:35%;background:var(--green)"></div></div><span class="pc" style="color:var(--green)">+50%</span></div>
+  <div class="note" style="margin-top:40px">…and which sectors are cooling. The full board is live on the dashboard.</div>
+  <div class="swipe">Swipe →</div><div class="pg">05</div>
+</section>
+
+<!-- 6 SOCIAL PROOF -->
+<section class="slide">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="label">Built with the people who use it</div>
+  <h1 style="font-size:62px">Stress-tested by partners across <span class="em">Europe &amp; the Middle East</span> — MBB tier-1 and boutique strategy firms.</h1>
+  <div class="note" style="margin-top:50px">No terminal does this. Nothing else on the market surfaces the mandate <span style="color:var(--cream)">before</span> the market does. Purpose-built for strategy partners.</div>
+  <div class="swipe">Swipe →</div><div class="pg">06</div>
+</section>
+
+<!-- 7 CTA -->
+<section class="slide cta">
+  <div class="brand"><svg class="logosvg" viewBox="0 0 28 28"><path d="M4 22 L14 4 L24 22" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M9 16 L19 16" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/></svg><span class="nm">StrategyAI</span></div>
+  <div class="label">Free · monthly</div>
+  <h1>The Deal Pulse report.</h1>
+  <div class="ctaline">Six months of EMEA M&amp;A in one read: sectors heating up, deal volume, regional flow, and the people moves that signal what's next.</div>
+  <div class="url">→ strategyai.co.uk/deal-insights</div>
+  <div class="pill">Like this post + comment <b>“DEALS”</b><br>and I'll send you the report.</div>
+  <div class="pg">07</div>
+</section>
+
+</body></html>
