@@ -590,7 +590,7 @@ const vObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.ta
  leg.innerHTML=`<span>Each line is coloured along its length:</span><span><i style="background:${TRED}"></i> Peaking — above the sector's own range</span><span><i style="background:${TGREEN}"></i> Baseline — normal run-rate</span><span><i style="background:${TBLUE}"></i> Dip / cooling — below range</span>`;
  wrap.appendChild(leg);
  const cmap={r:TRED,g:TGREEN,b:TBLUE};
- TAPE.forEach(d=>{
+ TAPE.slice().sort((a,b)=>b.pct-a.pct).forEach(d=>{
   const arr=d.d,max=Math.max(...arr),min=Math.min(...arr);
   const W=460,H=80,pad=6;
   const pts=arr.map((v,i)=>[pad+(W-2*pad)*i/(arr.length-1),(H-pad)-(v-min)/(max-min||1)*(H-2*pad)]);
