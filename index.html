@@ -239,44 +239,69 @@ footer a:hover{color:var(--gold)}
   .donutrow svg{flex:0 0 auto!important;width:158px!important;height:158px!important}
   .dlegend{width:100%}
   /* hero */
-  .hero{padding:54px 0 26px}
-  .hero h1{font-size:42px;max-width:none}
-  .hero .lede{font-size:14.5px;max-width:none}
-  /* section heads stack */
   section{padding:44px 0}
+  /* hero */
+  .hero{padding:54px 0 26px}
+  .hero h1{font-size:34px;max-width:none}
+  .hero .lede{font-size:11.5px;max-width:none}
+  .hero .asof{font-size:9px}
+  /* section heads + body text */
   .shead{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:24px}
-  .shead h2{font-size:25px}
-  .shead .desc{text-align:left;max-width:none;font-size:12.5px}
+  .shead h2{font-size:20px}
+  .shead h2 .num{font-size:10.5px}
+  .shead .desc{text-align:left;max-width:none;font-size:10px}
+  .insight .ik{font-size:7.5px}
+  .insight p{font-size:11px}
+  .subh{font-size:9.5px}
+  .legend{font-size:8px}
   /* KPI strip → 2 columns */
   .kpis{grid-template-columns:repeat(2,1fr)}
   .kpi{padding:15px 14px;border-bottom:1px solid var(--line)}
   .kpi:nth-child(3){border-right:1px solid var(--line)}
   .kpi:nth-last-child(-n+2){border-bottom:none}
-  .kpi .k{font-size:8.5px;letter-spacing:.16em}
-  .kpi .v{font-size:27px}
-  .kpi .v small{font-size:14px}
-  .kpi .s{font-size:9px}
+  .kpi .k{font-size:7px;letter-spacing:.16em}
+  .kpi .v{font-size:21.5px}
+  .kpi .v small{font-size:11px}
+  .kpi .s{font-size:7px}
   /* sector heat rows: name + delta on row 1, bar full-width on row 2 */
   .heatrow{grid-template-columns:1fr auto;gap:8px 12px;padding:12px 14px}
-  .heatrow .name{font-size:12.5px}
-  .heatrow .name .vol{font-size:9px}
+  .heatrow .name{font-size:10px}
+  .heatrow .name .vol{font-size:7px}
   .heatrow .bar{grid-column:1 / -1}
-  .delta{font-size:14px}
-  .heatscale{flex-wrap:wrap;justify-content:flex-start;gap:9px 14px;font-size:9px}
+  .bar .lab{font-size:8px}
+  .delta{font-size:11px}
+  .heatscale{flex-wrap:wrap;justify-content:flex-start;gap:9px 14px;font-size:7px}
   .heatscale span:last-child{flex-basis:100%;margin-top:2px;line-height:1.5}
   /* momentum tape → 2x2 */
   .tape{grid-template-columns:repeat(2,1fr);gap:11px}
-  .tapelegend{font-size:8.5px;gap:7px 12px;margin-bottom:2px}
+  .tapelegend{font-size:7px;gap:7px 12px;margin-bottom:2px}
   .tapelegend i{width:9px;height:9px;margin-right:4px}
   .spark{padding:13px 12px 11px;border-radius:10px}
-  .spark .sn{flex-direction:column;align-items:flex-start;gap:3px;font-size:12px}
-  .spark .pctv{font-size:15px}
-  .spark .sv{font-size:8px;letter-spacing:.03em;margin-top:4px;line-height:1.4}
+  .spark .sn{flex-direction:column;align-items:flex-start;gap:3px;font-size:9.5px}
+  .spark .pctv{font-size:12px}
+  .spark .sv{font-size:6.5px;letter-spacing:.03em;margin-top:4px;line-height:1.4}
   .spark svg{height:52px!important;margin-top:8px!important}
-  /* deal feed cards */
+  /* mandate board */
   .deal{padding:16px 16px}
-  .deal .route{font-size:16px}
+  .deal .route{font-size:13px}
+  .deal .m{font-size:7px}
+  .deal .angle{font-size:10px}
+  .deal .win{font-size:7.5px}
+  .deal.locked .lock{font-size:9px}
   .feedcta{flex-direction:column;align-items:flex-start;gap:14px}
+  .feedcta .ft{font-size:11px}
+  .feedcta a{font-size:9.5px}
+  /* donut legend + ticker */
+  .dleg{font-size:9.5px}
+  .dleg .pc{font-size:8px}
+  .ticker .run{font-size:9.5px}
+  /* buttons + signup form (inputs stay 16px to stop iOS zoom-on-focus) */
+  .btn{font-size:9px}
+  .dpbtn{font-size:10.5px}
+  .herocta-sub{font-size:8.5px}
+  .dpf span{font-size:8px}
+  .dpf input{font-size:16px}
+  .dp-consent{font-size:10px}
 }
 </style></head>
 <body>
