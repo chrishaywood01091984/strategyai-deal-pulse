@@ -228,6 +228,56 @@ footer a:hover{color:var(--gold)}
   border-radius:8px;padding:8px 11px;font-size:11px;color:var(--text);opacity:0;transition:opacity .12s;max-width:240px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .tip b{color:var(--gold)}
 @media(max-width:1100px){.wrap{padding:0 22px}.kpis{grid-template-columns:repeat(3,1fr)}.kpi:nth-child(3){border-right:none}.feed,.grid2,.grid2b{grid-template-columns:1fr}.tape{grid-template-columns:1fr}}
+/* ============ MOBILE (phones) ============ */
+@media(max-width:560px){
+  .wrap{padding:0 15px}
+  /* keep chart cards + SVGs inside the viewport */
+  .card,.chartcard,.grid2>*,.grid2b>*{min-width:0;max-width:100%}
+  .chartcard svg{width:100%;height:auto;display:block}
+  /* donut + legend stack */
+  .donutrow{flex-direction:column;align-items:center;gap:16px}
+  .donutrow svg{flex:0 0 auto!important;width:158px!important;height:158px!important}
+  .dlegend{width:100%}
+  /* hero */
+  .hero{padding:54px 0 26px}
+  .hero h1{font-size:42px;max-width:none}
+  .hero .lede{font-size:14.5px;max-width:none}
+  /* section heads stack */
+  section{padding:44px 0}
+  .shead{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:24px}
+  .shead h2{font-size:25px}
+  .shead .desc{text-align:left;max-width:none;font-size:12.5px}
+  /* KPI strip → 2 columns */
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi{padding:15px 14px;border-bottom:1px solid var(--line)}
+  .kpi:nth-child(3){border-right:1px solid var(--line)}
+  .kpi:nth-last-child(-n+2){border-bottom:none}
+  .kpi .k{font-size:8.5px;letter-spacing:.16em}
+  .kpi .v{font-size:27px}
+  .kpi .v small{font-size:14px}
+  .kpi .s{font-size:9px}
+  /* sector heat rows: name + delta on row 1, bar full-width on row 2 */
+  .heatrow{grid-template-columns:1fr auto;gap:8px 12px;padding:12px 14px}
+  .heatrow .name{font-size:12.5px}
+  .heatrow .name .vol{font-size:9px}
+  .heatrow .bar{grid-column:1 / -1}
+  .delta{font-size:14px}
+  .heatscale{flex-wrap:wrap;justify-content:flex-start;gap:9px 14px;font-size:9px}
+  .heatscale span:last-child{flex-basis:100%;margin-top:2px;line-height:1.5}
+  /* momentum tape → 2x2 */
+  .tape{grid-template-columns:repeat(2,1fr);gap:11px}
+  .tapelegend{font-size:8.5px;gap:7px 12px;margin-bottom:2px}
+  .tapelegend i{width:9px;height:9px;margin-right:4px}
+  .spark{padding:13px 12px 11px;border-radius:10px}
+  .spark .sn{flex-direction:column;align-items:flex-start;gap:3px;font-size:12px}
+  .spark .pctv{font-size:15px}
+  .spark .sv{font-size:8px;letter-spacing:.03em;margin-top:4px;line-height:1.4}
+  .spark svg{height:52px!important;margin-top:8px!important}
+  /* deal feed cards */
+  .deal{padding:16px 16px}
+  .deal .route{font-size:16px}
+  .feedcta{flex-direction:column;align-items:flex-start;gap:14px}
+}
 </style></head>
 <body>
 
