@@ -66,6 +66,23 @@ em{font-style:italic;color:var(--gold)}
 .hero .asof{margin-top:20px;font-size:11px;letter-spacing:.12em;color:var(--mut2);text-transform:uppercase}
 .hero .asof b{color:var(--gold);font-weight:500}
 
+/* ---- lens explainer / sibling callout ---- */
+.lenscallout{margin-top:30px;display:grid;grid-template-columns:1.55fr 1fr;gap:18px}
+.lc-main{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:13px;padding:20px 24px;
+  background:linear-gradient(180deg,rgba(201,168,76,.06),rgba(201,168,76,.02))}
+.lc-k{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:11px;display:flex;align-items:center;gap:9px}
+.lc-k::before{content:"◆";font-size:8px}
+.lc-main p{font-family:'Libre Baskerville',serif;font-size:13.5px;line-height:1.75;color:var(--body);margin:0}
+.lc-main p b{color:#fff;font-weight:400}
+.lc-sib{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);border-radius:13px;padding:20px 22px;
+  background:rgba(15,32,51,.5);transition:transform .25s,border-color .25s}
+.lc-sib:hover{transform:translateY(-3px);border-color:var(--gold-soft)}
+.lc-sibk{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.lc-sibt{font-family:'Playfair Display',serif;font-size:22px;color:#fff;line-height:1}
+.lc-sibd{font-family:'Libre Baskerville',serif;font-size:11.5px;line-height:1.6;color:var(--mut)}
+.lc-sibd i{color:var(--gold);font-style:italic}
+@media(max-width:560px){.lc-main p{font-size:11px}.lc-sibt{font-size:18px}.lc-sibd{font-size:10px}}
+
 /* ---- ticker ---- */
 .ticker{margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   overflow:hidden;white-space:nowrap;background:rgba(10,16,26,.4)}
@@ -227,7 +244,7 @@ footer a:hover{color:var(--gold)}
 .tip{position:fixed;z-index:60;pointer-events:none;background:rgba(10,16,26,.95);border:1px solid var(--gold-soft);
   border-radius:8px;padding:8px 11px;font-size:11px;color:var(--text);opacity:0;transition:opacity .12s;max-width:240px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .tip b{color:var(--gold)}
-@media(max-width:1100px){.wrap{padding:0 22px}.kpis{grid-template-columns:repeat(3,1fr)}.kpi:nth-child(3){border-right:none}.feed,.grid2,.grid2b{grid-template-columns:1fr}.tape{grid-template-columns:1fr}}
+@media(max-width:1100px){.wrap{padding:0 22px}.kpis{grid-template-columns:repeat(3,1fr)}.kpi:nth-child(3){border-right:none}.feed,.grid2,.grid2b,.lenscallout{grid-template-columns:1fr}.tape{grid-template-columns:1fr}}
 /* ============ MOBILE (phones) ============ */
 @media(max-width:560px){
   .wrap{padding:0 15px}
@@ -315,6 +332,20 @@ footer a:hover{color:var(--gold)}
   <h1>The mandate forms <span class="thin">before the</span> <em>deal closes.</em></h1>
   <p class="lede">Every acquisition, merger and capital raise across EMEA carries a hidden advisory window — the weeks when synergy programmes, integration mandates and operating-model work are decided. Deal Pulse reads six months of that flow so a partner can see where the next mandate is forming, not where the last one landed.</p>
   <div class="asof">Intelligence window <b>12 Nov 2025 — 29 May 2026</b> &nbsp;·&nbsp; <b>773</b> deals tracked &nbsp;·&nbsp; refreshed continuously</div>
+
+  <!-- What you're seeing + sibling lens -->
+  <div class="lenscallout">
+    <div class="lc-main">
+      <div class="lc-k">What you're seeing</div>
+      <p>Deal Insights maps <b>six months of completed EMEA M&amp;A</b> — 773 announced transactions and $531bn of disclosed value. It shows where advisory mandates have already <b>landed</b>: which sectors are consolidating, who is buying, and the live deals still inside their integration window.</p>
+    </div>
+    <a class="lc-sib" href="https://strategyai.co.uk/mandate-lens" target="_top">
+      <span class="lc-sibk">Sibling lens →</span>
+      <span class="lc-sibt">Mandate Lens</span>
+      <span class="lc-sibd">The live 30-day signal engine — 10,388 signals scanned, 703 scored mandates. Where mandates are <i>forming</i>, weeks before the deal is announced.</span>
+    </a>
+  </div>
+
   <div class="herocta">
     <button type="button" class="btn gold dpbtn" id="dpToggle" aria-expanded="false" aria-controls="dpFormWrap">Get the 6-month report — free</button>
     <div class="herocta-sub">Branded PDF snapshot + the refreshed edition every month · unsubscribe any time</div>
