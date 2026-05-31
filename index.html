@@ -249,7 +249,7 @@ footer a:hover{color:var(--gold)}
         <label class="dpf"><span>Full name</span><input type="text" name="name" autocomplete="name" maxlength="120" required></label>
         <label class="dpf"><span>Work email</span><input type="email" name="email" autocomplete="email" required></label>
       </div>
-      <input type="text" name="website" class="dp-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <input type="text" name="dp_hp_addr" class="dp-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="dp-consent"><input type="checkbox" name="consent" required><span>I agree to receive the Deal Pulse report and monthly newsletter from StrategyAI, and accept the <a id="dpPrivacy" href="https://strategyai.co.uk/privacy" target="_top" rel="noopener">privacy policy</a>. Unsubscribe any time.</span></label>
       <button type="submit" class="btn gold dp-submit" id="dpSubmit">Send me the report →</button>
       <div class="dp-msg" id="dpMsg" role="status" aria-live="polite"></div>
@@ -783,7 +783,7 @@ addEventListener('mousemove',e=>{if(tip.style.opacity==1)moveTip(e);});
 .dpf span{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .dpf input{background:#0d1b2a;border:1px solid #2e4763;border-radius:7px;padding:11px 13px;color:#fff;font-family:inherit;font-size:14px}
 .dpf input:focus{outline:none;border-color:var(--gold)}
-.dp-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.dp-hp{display:none!important}
 .dp-consent{display:flex;gap:10px;align-items:flex-start;font-family:'Inter',system-ui,sans-serif;font-size:12.5px;color:#cdd6df;line-height:1.5;margin:2px 0 16px}
 .dp-consent input{margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex:none}
 .dp-consent a{color:var(--gold)}
@@ -805,7 +805,7 @@ addEventListener('mousemove',e=>{if(tip.style.opacity==1)moveTip(e);});
  form.addEventListener('submit',async(e)=>{
    e.preventDefault();
    const fd=new FormData(form);
-   const payload={name:(fd.get('name')||'').toString().trim(),email:(fd.get('email')||'').toString().trim(),consent:form.querySelector('input[name=consent]').checked,website:(fd.get('website')||'').toString(),source:'deal_pulse_page'};
+   const payload={name:(fd.get('name')||'').toString().trim(),email:(fd.get('email')||'').toString().trim(),consent:form.querySelector('input[name=consent]').checked,website:(fd.get('dp_hp_addr')||'').toString(),source:'deal_pulse_page'};
    if(!payload.name){show('err','Please enter your name.');return;}
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)){show('err','Please enter a valid work email.');return;}
    if(!payload.consent){show('err','Please tick the consent box to continue.');return;}
