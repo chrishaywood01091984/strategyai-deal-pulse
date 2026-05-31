@@ -270,7 +270,7 @@ footer a:hover{color:var(--gold)}
       </div>
     </div>
     <div class="insight"><div class="ik">The StrategyAI read</div>
-      <p>Momentum is rotating, not rising across the board. Materials &amp; Chemicals (<b>+142%</b>) and the financial sector (<b>+92%</b>) have sharply lifted their deal cadence into the most recent quarter, while <b>Consumer &amp; Retail has cooled by roughly a fifth</b>. The read for a partner is positioning: the integration and synergy mandates that follow a deal wave land two-to-five months later, so the sectors accelerating now are where pipeline should be built for the back half of the year — and Consumer teams should be defending incumbent relationships rather than chasing a slowing market.</p>
+      <p>Momentum is rotating, not rising across the board. Materials &amp; Chemicals (<b>+142%</b>), Real Estate (<b>+108%</b>) and the financial sector (<b>+92%</b>) have sharply lifted their deal cadence into the most recent quarter, while <b>Consumer &amp; Retail has cooled by roughly a fifth</b>. One caveat worth pricing in: the Real Estate surge is led by single-asset property trades that generate little operating-advisory work, whereas the FIG and Materials acceleration carries genuine mandate weight. The integration and synergy mandates that follow a deal wave land two-to-five months later, so the sectors accelerating now <b>on quality, not just count</b> are where pipeline should be built for the back half of the year — while Consumer teams defend incumbent relationships rather than chase a slowing market.</p>
     </div>
   </div></section>
 
@@ -290,11 +290,11 @@ footer a:hover{color:var(--gold)}
   <section id="tape"><div class="reveal">
     <div class="shead">
       <h2><span class="num">03</span>Sector momentum tape</h2>
-      <p class="desc">Six-month trajectory for every tracked sector at a glance. FIG and Healthcare are breaking out; TMT remains the deepest market by volume.</p>
+      <p class="desc">Six-month trajectory for every tracked sector at a glance. Materials, Real Estate and FIG are accelerating hardest into the recent quarter; TMT remains the deepest market by volume.</p>
     </div>
     <div class="tape" id="tapegrid"></div>
     <div class="insight"><div class="ik">The StrategyAI read</div>
-      <p>The tape separates structural depth from directional heat. <b>TMT and FIG are the deepest markets</b> by raw volume and the safest places to keep a standing sector team. But the steepest recent slopes — Materials, Business Services, Healthcare — are where the marginal mandate is being created right now. Depth tells a partner where to be permanently; slope tells them where to lean in this quarter.</p>
+      <p>The tape separates structural depth from directional heat. <b>TMT and FIG are the deepest markets</b> by raw volume and the safest places to keep a standing sector team. The steepest recent slopes are Materials, Real Estate and FIG — but Real Estate's is inflated by a cluster of single-asset property trades that throw off little integration work, so on mandate quality the cleaner accelerations to lean into are <b>FIG, Materials and Business Services</b>. Depth tells a partner where to be permanently; slope tells them where to lean in this quarter.</p>
     </div>
   </div></section>
 
@@ -316,11 +316,11 @@ footer a:hover{color:var(--gold)}
       <div class="card chartcard">
         <div class="subh">Trigger-strength distribution</div>
         <svg id="trighist" viewBox="0 0 460 360" preserveAspectRatio="xMidYMid meet"></svg>
-        <div class="legend"><span>247 deals score 7+/10 — the high-conviction core of the half-year.</span></div>
+        <div class="legend"><span>253 deals score 7+/10 — the high-conviction core of the half-year.</span></div>
       </div>
     </div>
     <div class="insight"><div class="ik">The StrategyAI read</div>
-      <p>Volume and conviction point in different directions, and the gap is the opportunity. Post-acquisition integration is <b>84% of all flow but scores a middling 6.1/10</b> — reliable, competitive, commoditised work. PE Day-One and cross-border entry deals are rare (27 combined) yet score <b>8.3–8.9</b>, because the advisory need is acute and the field is thin. The play is a barbell: industrialise the PMI volume to stay in the flow, and hunt selectively for the high-conviction patterns you can win at premium rates.</p>
+      <p>Volume and conviction point in different directions, and the gap is the opportunity. Post-acquisition integration is <b>79% of all flow but scores a middling 6.1/10</b> — reliable, competitive, commoditised work. PE Day-One deals are rare (25) yet score <b>8.9</b>, with pre-exit prep and sector disruption also clearing 7.0+, because the advisory need is acute and the field is thin. The play is a barbell: industrialise the PMI volume to stay in the flow, and hunt selectively for the high-conviction patterns you can win at premium rates.</p>
     </div>
   </div></section>
 
@@ -543,7 +543,7 @@ const vObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.ta
  const svg=document.getElementById('flowchart');
  const W=1180,H=380,padL=54,padR=54,padT=30,padB=46;
  const iw=W-padL-padR, ih=H-padT-padB;
- const maxD=160, maxV=180;
+ const maxD=240, maxV=180;
  // gridlines
  for(let i=0;i<=4;i++){const y=padT+ih*i/4;svg.appendChild(el('line',{class:'gridline',x1:padL,y1:y,x2:W-padR,y2:y}));
    const t=el('text',{class:'axislab',x:padL-10,y:y+4,'text-anchor':'end'});t.textContent=Math.round(maxD-maxD*i/4);svg.appendChild(t);
