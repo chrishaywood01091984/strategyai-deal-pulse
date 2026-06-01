@@ -1,0 +1,37 @@
+name: Deal Pulse · Refresh data from ma_deals
+
+# Regenerates index.html's embedded aggregates + KPIs from ma_deals so the live
+# dashboard (and the PDF rendered from it by the pipeline's deal_pulse_report job
+# at 07:00) stay fresh and match the monthly email. Runs at 06:00 on the 1st —
+# an hour before the report cron — so GitHub Pages has time to publish.
+# No secrets needed: refresh_deal_pulse_page.py uses the public anon key.
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Refresh index.html from ma_deals
+        run: python refresh_deal_pulse_page.py
+      - name: Commit if changed
+        run: |
+          git config user.name "deal-pulse-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet -- index.html; then
+            echo "No data change."
+          else
+            git add index.html
+            git commit -m "chore: monthly Deal Pulse data refresh from ma_deals [skip ci]"
+            git push
+          fi
