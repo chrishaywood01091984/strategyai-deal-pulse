@@ -9,7 +9,7 @@ the monthly email. No secrets needed — uses the public anon key.
 
 Usage:  python refresh_deal_pulse_page.py
 """
-import json, os, re, sys, urllib.request
+import datetime, json, os, re, sys, urllib.request
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://gvdfeqzhizlzpybdibca.supabase.co").rstrip("/")
 ANON = os.environ.get("SUPABASE_ANON_KEY",
@@ -44,7 +44,17 @@ def fetch():
 
 def build_block(s):
     heat = [{"s":h["s"],"t":h["t"],"r":h["r"],"p":h["p"],"pct":h.get("pct") or 0} for h in s["heat"]]
-    flow = [{"m":f["m"],"d":f["d"],"v":f["v"]} for f in s["flow"]]
+    # Drop the in-progress current month so the flow chart never shows a
+    # partial trailing bar (e.g. a near-zero July on the 4th). Locale-safe.
+    _MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    _cur = _MO[datetime.date.today().month - 1]
+    flow_src = list(s["flow"])
+    months = list(s["months"])
+    if flow_src and flow_src[-1].get("m") == _cur:
+        flow_src.pop()
+        if months and months[-1] == _cur:
+            months.pop()
+    flow = [{"m":f["m"],"d":f["d"],"v":f["v"]} for f in flow_src]
     tape = [{"s":t["s"],"pct":t.get("pct") or 0,"d":t["d"]} for t in s["tape"]]
     patterns = [{"n":plabel(p["n"]),"c":p["c"],"trig":p["trig"]} for p in s["patterns"]]
     trig = [{"s":t["s"],"n":t["n"]} for t in s["trig"]]
@@ -60,7 +70,7 @@ def build_block(s):
               "win":"Advisory window open · 6–14 weeks"} for d in s["deals"]]
     def c(name,obj): return f"const {name}={json.dumps(obj,ensure_ascii=False)};"
     return "\n".join([
-        c("months",s["months"]), c("HEAT",heat), c("FLOW",flow), c("TAPE",tape),
+        c("months",months), c("HEAT",heat), c("FLOW",flow), c("TAPE",tape),
         c("PATTERNS",patterns), c("TRIG",trig), c("GEO",geo), c("REGION",region),
         c("BUYER",buyer), c("LEAGUE",league), c("VBANDS",vbands), c("DEALS",deals),
     ])
